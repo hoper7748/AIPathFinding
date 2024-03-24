@@ -6,19 +6,22 @@ namespace BT
 {
     public class IsCovereAvaliableNode : Node
     {
+        
         private Cover[] avaliableCovers;
         private Transform target;
         private EnemyAI ai;
 
-        public IsCovereAvaliableNode(Cover[] _avaliableCovers, Transform _target, EnemyAI _ai)
+        public IsCovereAvaliableNode(Cover[] _avaliableCovers, Transform _target, EnemyAI _ai, string _name)
         {
             avaliableCovers = _avaliableCovers;
             target = _target;
             ai = _ai;
+            name = _name;
         }
 
         public override NodeState Evaluate()
         {
+            Debug.Log($"{name}");
             Transform bestSpot = FindBestCoverSpot();
             ai.SetBestCoverSopt(bestSpot);
             return bestSpot != null ? NodeState.Success : NodeState.Failure; 
@@ -26,6 +29,14 @@ namespace BT
 
         private Transform FindBestCoverSpot()
         {
+            // 새로운 경로 찾기
+            if(ai.GetBestCoverSpot() != null)
+            {
+                if(CheckIfSpotIsValid(ai.GetBestCoverSpot()))
+                {
+                    return ai.GetBestCoverSpot();
+                }
+            }
             float minAngle = 90;
             Transform bestSpot = null;
             for(int i =0; i < avaliableCovers.Length; i++)

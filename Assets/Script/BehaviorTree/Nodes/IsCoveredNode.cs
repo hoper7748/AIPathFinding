@@ -10,14 +10,16 @@ namespace BT
         private Transform target;
         private Transform origin;
 
-        public IsCoveredNode(Transform _target, Transform _origin)
+        public IsCoveredNode(Transform _target, Transform _origin, string _name)
         {
             target = _target;
             origin = _origin;
+            name = _name;
         }
 
         public override NodeState Evaluate()
         {
+            Debug.Log($"{name}");
             RaycastHit hit;
             if (Physics.Raycast(origin.position, target.position - origin.position, out hit))
             {

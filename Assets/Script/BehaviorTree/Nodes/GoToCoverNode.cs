@@ -12,14 +12,16 @@ namespace BT
         private NavMeshAgent agent;
         private EnemyAI ai;
 
-        public GoToCoverNode(NavMeshAgent _agent, EnemyAI _ai)
+        public GoToCoverNode(NavMeshAgent _agent, EnemyAI _ai, string _name)
         {
             agent = _agent;
             ai = _ai;
+            name = _name;
         }
 
         public override NodeState Evaluate()
         {
+            Debug.Log($"{name}");
             Transform coverSpot = ai.GetBestCoverSpot();
             if (coverSpot == null)
                 return NodeState.Failure;

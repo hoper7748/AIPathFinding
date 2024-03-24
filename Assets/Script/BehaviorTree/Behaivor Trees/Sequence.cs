@@ -10,15 +10,15 @@ namespace BT
     {
         protected List<Node> nodes = new List<Node>();
 
-        public Sequence(List<Node> _nodes)
+        public Sequence(List<Node> _nodes, string _name)
         {
             nodes = _nodes;
+            name = _name;
         }
-
-
 
         public override NodeState Evaluate()
         {
+            Debug.Log($"{name}");
             bool isAnyNodeRunning = false;
             foreach(var node in nodes)
             {

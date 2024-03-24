@@ -12,15 +12,17 @@ namespace BT
         private NavMeshAgent agent;
         private EnemyAI ai;
 
-        public ChaseNode(Transform _target, NavMeshAgent _agent, EnemyAI _ai)
+        public ChaseNode(Transform _target, NavMeshAgent _agent, EnemyAI _ai, string _name)
         {
             target = _target;
             agent = _agent;
             ai = _ai;
+            name = _name;
         }
 
         public override NodeState Evaluate()
         {
+            Debug.Log($"{name}");
             ai.SetColor(Color.yellow);
             float distance = Vector3.Distance(target.position, agent.transform.position);
             if(distance > 0.2f)

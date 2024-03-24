@@ -10,22 +10,22 @@ namespace BT
     {
         protected List<Node> nodes = new List<Node>();
 
-        public Selector(List<Node> _nodes)
+        public Selector(List<Node> _nodes, string _name)
         {
             nodes = _nodes;
+            name = _name;
         }
 
 
 
         public override NodeState Evaluate()
         {
-            bool isAnyNodeRunning = false;
+            Debug.Log($"{name}");
             foreach(var node in nodes)
             {
                 switch(node.Evaluate())
                 {
                     case NodeState.Running:
-                        isAnyNodeRunning = true;
                         nodeState = NodeState.Running;
                         return nodeState;   
                     case NodeState.Success:

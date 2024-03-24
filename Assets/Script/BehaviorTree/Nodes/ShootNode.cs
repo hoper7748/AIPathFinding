@@ -10,14 +10,16 @@ namespace BT
         private NavMeshAgent agent;
         private EnemyAI ai;
 
-        public ShootNode(NavMeshAgent _agent, EnemyAI _ai)
+        public ShootNode(NavMeshAgent _agent, EnemyAI _ai, string _name)
         {
             agent = _agent;
             ai = _ai;
+            name = _name;
         }
 
         public override NodeState Evaluate()
         {
+            Debug.Log($"{name}");
             agent.isStopped = true;
             ai.SetColor(Color.green);
             return NodeState.Success;

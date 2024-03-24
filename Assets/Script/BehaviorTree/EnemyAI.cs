@@ -45,24 +45,24 @@ public class EnemyAI : MonoBehaviour
 
     private void ConstructBehaviorTree()
     {
-        BT.IsCovereAvaliableNode coverAvaliableNode = new BT.IsCovereAvaliableNode(avaliableCovers, playertransform, this);
-        BT.GoToCoverNode goToCoverNode = new BT.GoToCoverNode(agent, this);
-        BT.HealthNode healthNode = new BT.HealthNode(this, lowHealthThreshold);
-        BT.IsCoveredNode isCoveredNode = new BT.IsCoveredNode(playertransform, transform);
-        BT.ChaseNode chaseNode = new BT.ChaseNode(playertransform, agent, this);
-        BT.RangeNode chasingRangeNode = new BT.RangeNode(shootingRange, playertransform, transform);
-        BT.RangeNode shootingRangeNode = new BT.RangeNode(shootingRange, playertransform, transform);
-        BT.ShootNode shootNode = new BT.ShootNode(agent, this);
+        BT.IsCovereAvaliableNode coverAvaliableNode = new BT.IsCovereAvaliableNode(avaliableCovers, playertransform, this, $"coverAvaliableNode");
+        BT.GoToCoverNode goToCoverNode = new BT.GoToCoverNode(agent, this, $"goToCoverNode");
+        BT.HealthNode healthNode = new BT.HealthNode(this, lowHealthThreshold, $"healthNode");
+        BT.IsCoveredNode isCoveredNode = new BT.IsCoveredNode(playertransform, transform, $"isCoveredNode");
+        BT.ChaseNode chaseNode = new BT.ChaseNode(playertransform, agent, this, "chaseNode");
+        BT.RangeNode chasingRangeNode = new BT.RangeNode(chasingRange, playertransform, transform, $"chasingRangeNode");
+        BT.RangeNode shootingRangeNode = new BT.RangeNode(shootingRange, playertransform, transform, $"shootingRangeNode");
+        BT.ShootNode shootNode = new BT.ShootNode(agent, this, $"ShootNode");
 
-        BT.Sequence chaseSequence = new BT.Sequence(new List<BT.Node> { chasingRangeNode, chaseNode });
-        BT.Sequence shootSequence = new BT.Sequence(new List<BT.Node> { shootingRangeNode, shootNode });
+        BT.Sequence chaseSequence = new BT.Sequence(new List<BT.Node> { chasingRangeNode, chaseNode }, "chaseSequence");
+        BT.Sequence shootSequence = new BT.Sequence(new List<BT.Node> { shootingRangeNode, shootNode }, "shootSequence");
 
-        BT.Sequence goToCoverSequence = new BT.Sequence(new List<BT.Node> { coverAvaliableNode, goToCoverNode });
-        BT.Selector findCoverSelector = new BT.Selector(new List<BT.Node> { goToCoverSequence, chaseSequence });
-        BT.Selector tryToTakeCoverSelector = new BT.Selector(new List<BT.Node> { isCoveredNode, findCoverSelector });
-        BT.Sequence mainCoverSequence = new BT.Sequence(new List<BT.Node> { healthNode, tryToTakeCoverSelector });
+        BT.Sequence goToCoverSequence = new BT.Sequence(new List<BT.Node> { coverAvaliableNode, goToCoverNode }, "goToCoverSequence");
+        BT.Selector findCoverSelector = new BT.Selector(new List<BT.Node> { goToCoverSequence, chaseSequence }, "findCoverSelector");
+        BT.Selector tryToTakeCoverSelector = new BT.Selector(new List<BT.Node> { isCoveredNode, findCoverSelector }, "tryToTakeCoverSelector");
+        BT.Sequence mainCoverSequence = new BT.Sequence(new List<BT.Node> { healthNode, tryToTakeCoverSelector }, "mainCoverSequence");
 
-        topNode = new BT.Selector(new List<BT.Node> { mainCoverSequence, shootSequence, chaseSequence });
+        topNode = new BT.Selector(new List<BT.Node> { mainCoverSequence, shootSequence, chaseSequence }, "topNode");
     }
 
     public float GetCurrentHealth()
