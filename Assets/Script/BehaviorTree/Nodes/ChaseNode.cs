@@ -22,7 +22,7 @@ namespace BT
 
         public override NodeState Evaluate()
         {
-            Debug.Log($"{name}");
+            //Debug.Log($"{name}");
             ai.SetColor(Color.yellow);
             float distance = Vector3.Distance(target.position, agent.transform.position);
             if(distance > 0.2f)
