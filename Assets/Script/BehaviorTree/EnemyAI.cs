@@ -63,7 +63,7 @@ public class EnemyAI : MonoBehaviour
 
     private float currentHealth;
 
-    private const float HorizontalViewAngle = 120f;
+    private const float HorizontalViewAngle = 60f;
     private float m_horizontalViewHalfAngle = 0f;
     private float rotateAngle = 0;
     [SerializeField] private float m_viewRotateZ = 0f;
@@ -155,7 +155,7 @@ public class EnemyAI : MonoBehaviour
     
     private void SoloModeBehaivorTree()
     {
-        // 최하위 노드
+
         BT.IsCovereAvaliableNode coverAvaliableNode = new BT.IsCovereAvaliableNode(avaliableCovers, playertransform, this, $"coverAvaliableNode");
         BT.GoToCoverNode goToCoverNode = new BT.GoToCoverNode(agent, this, $"goToCoverNode");
         BT.HealthNode healthNode = new BT.HealthNode(this, lowHealthThreshold, $"healthNode");
@@ -164,16 +164,17 @@ public class EnemyAI : MonoBehaviour
         BT.RangeNode chasingRangeNode = new BT.RangeNode(chasingRange, playertransform, transform, FindViewTarget, $"chasingRangeNode");
         BT.RangeNode shootingRangeNode = new BT.RangeNode(shootingRange, playertransform, transform, FindViewTarget, $"shootingRangeNode");
         BT.ShootNode shootNode = new BT.ShootNode(agent, this, bullet, $"ShootNode");
+        BT.BoundaryNodes Boundary = new BT.BoundaryNode();
+        
 
         BT.Sequence chaseSequence = new BT.Sequence(new List<BT.Node> { chasingRangeNode, chaseNode }, $"chaseSequence");
         BT.Sequence shootSequence = new BT.Sequence(new List<BT.Node> { shootingRangeNode, shootNode }, $"shootSequence");
-        // 중위 노드 
+
         BT.Sequence goToCoverSequence = new BT.Sequence(new List<BT.Node> { coverAvaliableNode, goToCoverNode }, $"goToCoverSequence");
         BT.Selector findCoverSelector = new BT.Selector(new List<BT.Node> { goToCoverSequence, chaseSequence }, $"findCoverSelector");
         BT.Selector tryToTakeCoverSelector = new BT.Selector(new List<BT.Node> { isCoveredNode, findCoverSelector }, $"tryToTakeCoverSelector");
         BT.Sequence mainCoverSequence = new BT.Sequence(new List<BT.Node> { healthNode, tryToTakeCoverSelector }, $"mainCoverSequence");
 
-        // 최상위 노드
         topNode = new BT.Selector(new List<BT.Node> { mainCoverSequence, shootSequence, chaseSequence }, $"topNode");
     }
 
