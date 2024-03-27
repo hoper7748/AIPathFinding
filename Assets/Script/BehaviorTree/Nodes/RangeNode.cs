@@ -10,16 +10,14 @@ namespace BT
         private float range;
         private Transform target;
         private Transform origin;
-        public Func<Transform, float, LayerMask, GameObject> callback;
-        public LayerMask layerMask;
+        public Func<float, GameObject> callback;
 
-        public RangeNode(float _range, Transform _target, Transform _origin, Func<Transform, float, LayerMask, GameObject> _callBack, LayerMask _layerMask,string _name)
+        public RangeNode(float _range, Transform _target, Transform _origin, Func<float, GameObject> _callBack, string _name)
         {
             range = _range;
             target = _target;
             origin = _origin;
             callback = _callBack;
-            layerMask = _layerMask;
             name = _name;
         }
 
@@ -27,7 +25,7 @@ namespace BT
         {
             
             float distance = Vector3.Distance(target.position , origin.position);
-            GameObject A = callback(origin.transform, range, layerMask);
+            GameObject A = callback(range);
             
 
             //return distance <= range ? NodeState.Success : NodeState.Failure;

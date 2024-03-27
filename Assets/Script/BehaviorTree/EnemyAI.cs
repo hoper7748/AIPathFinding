@@ -55,7 +55,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private LayerMask layerMask;
 
     private Material material;
-    private Transform bestCoverSpot;
+    [SerializeField] private Transform bestCoverSpot;
     private NavMeshAgent agent;
 
     private BT.Node topNode;
@@ -70,19 +70,19 @@ public class EnemyAI : MonoBehaviour
 
     #region DrawGizmos
 
-    private Vector3 AngleToDirY(Transform transform, float angleInDegree)
+    private Vector3 AngleToDirY(Transform _transform, float angleInDegree)
     {
         #region Omit
-        float radian = (angleInDegree + transform.eulerAngles.y) * Mathf.Deg2Rad;
+        float radian = (angleInDegree + _transform.eulerAngles.y) * Mathf.Deg2Rad;
         return new Vector3(Mathf.Sin(radian), 0f, Mathf.Cos(radian));
         #endregion
     }
 
-    private GameObject FindViewTarget(Transform _transform, float SearchRange, LayerMask targetMask)
+    public GameObject FindViewTarget(float SearchRange)
     {
         Vector3 targetPos, dir, lookDir;
-        Vector3 originPos = _transform.position;
-        Collider[] hitedTargets = Physics.OverlapSphere(originPos, SearchRange, targetMask);
+        Vector3 originPos = transform.position;
+        Collider[] hitedTargets = Physics.OverlapSphere(originPos, SearchRange, layerMask);
 
         float dot, angle;
 
@@ -161,8 +161,8 @@ public class EnemyAI : MonoBehaviour
         BT.HealthNode healthNode = new BT.HealthNode(this, lowHealthThreshold, $"healthNode");
         BT.IsCoveredNode isCoveredNode = new BT.IsCoveredNode(playertransform, transform, $"isCoveredNode");
         BT.ChaseNode chaseNode = new BT.ChaseNode(playertransform, agent, this, $"chaseNode");
-        BT.RangeNode chasingRangeNode = new BT.RangeNode(chasingRange, playertransform, transform, FindViewTarget, layerMask, $"chasingRangeNode");
-        BT.RangeNode shootingRangeNode = new BT.RangeNode(shootingRange, playertransform, transform, FindViewTarget, layerMask, $"shootingRangeNode");
+        BT.RangeNode chasingRangeNode = new BT.RangeNode(chasingRange, playertransform, transform, FindViewTarget, $"chasingRangeNode");
+        BT.RangeNode shootingRangeNode = new BT.RangeNode(shootingRange, playertransform, transform, FindViewTarget, $"shootingRangeNode");
         BT.ShootNode shootNode = new BT.ShootNode(agent, this, bullet, $"ShootNode");
 
         BT.Sequence chaseSequence = new BT.Sequence(new List<BT.Node> { chasingRangeNode, chaseNode }, $"chaseSequence");

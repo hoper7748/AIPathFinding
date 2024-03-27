@@ -21,7 +21,8 @@ namespace BT
 
         public override NodeState Evaluate()
         {
-            Debug.Log($"{name}");
+            Debug.DrawLine(ai.transform.position, ai.transform.forward * 10f);
+            //Debug.Log($"{name}");
             Transform bestSpot = FindBestCoverSpot();
             ai.SetBestCoverSopt(bestSpot);
             return bestSpot != null ? NodeState.Success : NodeState.Failure; 
@@ -30,10 +31,13 @@ namespace BT
         private Transform FindBestCoverSpot()
         {
             // 새로운 경로 찾기
+            // 이미 도달해야할 목표가 있다?
             if(ai.GetBestCoverSpot() != null)
             {
-                if(CheckIfSpotIsValid(ai.GetBestCoverSpot()))
+                // 목표 지점으로 가는 길에 상대방이 존재.
+                if(ai.FindViewTarget(30f) == null)
                 {
+                    Debug.Log("AA");
                     return ai.GetBestCoverSpot();
                 }
             }
@@ -66,13 +70,31 @@ namespace BT
                     }
                 }
             }
-
             return bestSpot;
         }
+
+        // 가는 방향에 적이 있을 경우.
+        public bool CheckIfPlayerToWay(Transform spot)
+        {
+            RaycastHit hit;
+            Vector3 direction = ai.transform.forward;
+            
+            if(Physics.Raycast(spot .position, direction, out hit))
+            {
+                if(hit.collider.transform != target)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
 
         private bool CheckIfSpotIsValid(Transform spot)
         {
             RaycastHit hit;
+            // target to spot pos;
             Vector3 direction = target.position - spot.position;
 
             if(Physics.Raycast(spot.position, direction, out hit))
@@ -82,8 +104,8 @@ namespace BT
                     return true; 
                 }
             }
-
             return false;
         }
+
     }
 }

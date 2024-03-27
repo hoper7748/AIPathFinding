@@ -60,10 +60,30 @@ namespace PathManager
                         break;
                     }
 
+                    //grid.OpenListAdd(currentNode, targetNode, ref openSet, ref closeSet);
+
+
+
+
                     foreach (Node neighbour in grid.GetNeighbours(currentNode))
                     {
                         if (!neighbour.walkable || closeSet.Contains(neighbour))
                             continue;
+                        
+                        var checkX = neighbour.gridX;
+                        var checkY = neighbour.gridY;
+
+                        if (checkX >= 100 && checkX < 0 && checkY >= 100 && checkY < 0) continue;
+
+                        //if (!grid[checkX - 1, neighbour.gridY].walkable || !grid[neighbour.gridX, checkY - 1].walkable) continue;
+                        //if (!grid[checkX - 1, neighbour.gridY].walkable || !grid[neighbour.gridX, checkY].walkable) continue;
+                        //if (!grid[checkX - 1, neighbour.gridY].walkable || !grid[neighbour.gridX, checkY + 1].walkable) continue;
+                        //if (!grid[checkX, neighbour.gridY].walkable || !grid[neighbour.gridX, checkY - 1].walkable) continue;
+                        //if (!grid[checkX, neighbour.gridY].walkable || !grid[neighbour.gridX, checkY + 1].walkable) continue;
+                        //if (!grid[checkX + 1, neighbour.gridY].walkable || !grid[neighbour.gridX, checkY - 1].walkable) continue;
+                        //if (!grid[checkX + 1, neighbour.gridY].walkable || !grid[neighbour.gridX, checkY].walkable) continue;
+                        //if (!grid[checkX + 1, neighbour.gridY].walkable || !grid[neighbour.gridX, checkY + 1].walkable) continue;
+
 
                         int newMovementCostToNeighbour = currentNode.gCost + GetDistance(currentNode, neighbour) + neighbour.movementPenalty;
                         if (newMovementCostToNeighbour < neighbour.gCost || !openSet.Contains(neighbour))
@@ -87,6 +107,8 @@ namespace PathManager
             }
             requestManager.FinishedProcessingPath(wayPoint, pathSuccess);
         }
+
+
 
         Vector3[] RetracePath(Node startNode, Node targetNode)
         {

@@ -43,8 +43,8 @@ public class Unit : MonoBehaviour
     }
 
     
-
-    // Rect로 한 칸 범위를 생성하고 생성된 범위를 체크하는 형식
+    // 목표물의 이동이 감지되면 체크를 함.
+    // Rect로 칸 당 범위를 생성하고 생성된 범위를 체크하는 형식
     public bool CheckTargetPosition()
     {
         // 타겟 노드
@@ -54,8 +54,8 @@ public class Unit : MonoBehaviour
 
         float distance = Mathf.Abs(Vector3.Distance(targetPos, FinTarget));
 
-        //Vector3 minusPos = ;
-        if (distance > 1.5f)
+        // 1.5 * n
+        if (distance > 1.5f * 4)
         {
             return true;
         }
