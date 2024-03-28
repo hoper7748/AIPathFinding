@@ -51,6 +51,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float shootingRange;
 
     [SerializeField] private Transform playertransform;
+    [SerializeField] private Transform targetTransform;
     [SerializeField] private BT.Cover[] avaliableCovers;
     [SerializeField] private LayerMask layerMask;
 
@@ -59,14 +60,29 @@ public class EnemyAI : MonoBehaviour
     private NavMeshAgent agent;
 
     private BT.Node topNode;
-    private GameObject bullet;             // 공격 시 필요로 하게 되는 탄환
+    private GameObject bullet;             // 공격 시 필요로 하게 되는 탄환 아직 미설정
 
     private float currentHealth;
+    [HideInInspector] public Vector3 _movingPoint;
+    [HideInInspector] public Tuple<Vector3, bool> movingPoint;
+
 
     private const float HorizontalViewAngle = 60f;
     private float m_horizontalViewHalfAngle = 0f;
     private float rotateAngle = 0;
     [SerializeField] private float m_viewRotateZ = 0f;
+
+    public Transform NowTarget
+    {
+        get
+        {
+            return targetTransform;
+        }
+        set
+        {
+            NowTarget = value;  
+        }
+    }
 
     #region DrawGizmos
 
@@ -161,21 +177,30 @@ public class EnemyAI : MonoBehaviour
         BT.HealthNode healthNode = new BT.HealthNode(this, lowHealthThreshold, $"healthNode");
         BT.IsCoveredNode isCoveredNode = new BT.IsCoveredNode(playertransform, transform, $"isCoveredNode");
         BT.ChaseNode chaseNode = new BT.ChaseNode(playertransform, agent, this, $"chaseNode");
-        BT.RangeNode chasingRangeNode = new BT.RangeNode(chasingRange, playertransform, transform, FindViewTarget, $"chasingRangeNode");
-        BT.RangeNode shootingRangeNode = new BT.RangeNode(shootingRange, playertransform, transform, FindViewTarget, $"shootingRangeNode");
+        BT.SearchNode chasingRangeNode = new BT.SearchNode(chasingRange, playertransform, transform, FindViewTarget, $"chasingRangeNode");
+        BT.SearchNode shootingRangeNode = new BT.SearchNode(shootingRange, playertransform, transform, FindViewTarget, $"shootingRangeNode");
         BT.ShootNode shootNode = new BT.ShootNode(agent, this, bullet, $"ShootNode");
-        BT.BoundaryNodes Boundary = new BT.BoundaryNode();
-        
+
+        //BT.IsTargetNode 
+
+
+
+        BT.IdleNode idleNode = new BT.IdleNode(this, agent);
+        //BT.BoundaryNode Boundary = new BT.BoundaryNode(agent);
+
 
         BT.Sequence chaseSequence = new BT.Sequence(new List<BT.Node> { chasingRangeNode, chaseNode }, $"chaseSequence");
         BT.Sequence shootSequence = new BT.Sequence(new List<BT.Node> { shootingRangeNode, shootNode }, $"shootSequence");
+
+        BT.Sequence nonCombatSequence = new BT.Sequence(new List<BT.Node> { idleNode }, $"idleSequenece");
+        BT.Selector combatSequence = new BT.Selector(new List<BT.Node> { shootSequence, chaseSequence }, $"findEnemySequence");
 
         BT.Sequence goToCoverSequence = new BT.Sequence(new List<BT.Node> { coverAvaliableNode, goToCoverNode }, $"goToCoverSequence");
         BT.Selector findCoverSelector = new BT.Selector(new List<BT.Node> { goToCoverSequence, chaseSequence }, $"findCoverSelector");
         BT.Selector tryToTakeCoverSelector = new BT.Selector(new List<BT.Node> { isCoveredNode, findCoverSelector }, $"tryToTakeCoverSelector");
         BT.Sequence mainCoverSequence = new BT.Sequence(new List<BT.Node> { healthNode, tryToTakeCoverSelector }, $"mainCoverSequence");
 
-        topNode = new BT.Selector(new List<BT.Node> { mainCoverSequence, shootSequence, chaseSequence }, $"topNode");
+        topNode = new BT.Selector(new List<BT.Node> { mainCoverSequence, combatSequence, nonCombatSequence }, $"topNode");
     }
 
     public float GetCurrentHealth()

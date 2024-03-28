@@ -8,7 +8,7 @@ namespace BT
     public class HealthNode : BT.Node
     {
         private EnemyAI ai;
-        private float threshold;                // ´ÄÀº?
+        private float threshold;
 
         public HealthNode(EnemyAI _ai, float _threshold, string _name)
         {

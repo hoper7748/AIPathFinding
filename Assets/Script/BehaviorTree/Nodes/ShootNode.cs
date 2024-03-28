@@ -28,11 +28,11 @@ namespace BT
 
             agent.isStopped = true;
             ai.SetColor(Color.green);
-            if(bullet == null)
-            {
-                Debug.Log("Not Have Bullet");
-                return NodeState.Failure;
-            }
+            //if(bullet == null)
+            //{
+            //    Debug.Log("Not Have Bullet");
+            //    return NodeState.Failure;
+            //}
             return NodeState.Success;
         }
     }

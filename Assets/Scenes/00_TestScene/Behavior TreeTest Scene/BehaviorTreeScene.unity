@@ -254,7 +254,7 @@ Transform:
   m_GameObject: {fileID: 200359529}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 29.784878, y: -0.08333355, z: -0.46662804}
+  m_LocalPosition: {x: 20.6, y: -0.08333355, z: 5.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1833,7 +1833,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1797345416
 Transform:
   m_ObjectHideFlags: 0
@@ -2254,6 +2254,7 @@ MonoBehaviour:
   chasingRange: 30
   shootingRange: 15
   playertransform: {fileID: 200359533}
+  targetTransform: {fileID: 0}
   avaliableCovers:
   - {fileID: 1493134481}
   - {fileID: 1433093044}
@@ -2267,6 +2268,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   bestCoverSpot: {fileID: 0}
+  movingPoint: {x: 0, y: 0, z: 0}
   m_viewRotateZ: 0
 --- !u!1 &1990155249
 GameObject:

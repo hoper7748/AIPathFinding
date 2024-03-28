@@ -5,14 +5,14 @@ using UnityEngine;
 
 namespace BT
 {
-    public class RangeNode : BT.Node
+    public class SearchNode : BT.Node
     {
         private float range;
         private Transform target;
         private Transform origin;
         public Func<float, GameObject> callback;
 
-        public RangeNode(float _range, Transform _target, Transform _origin, Func<float, GameObject> _callBack, string _name)
+        public SearchNode(float _range, Transform _target, Transform _origin, Func<float, GameObject> _callBack, string _name)
         {
             range = _range;
             target = _target;
@@ -23,14 +23,15 @@ namespace BT
 
         public override NodeState Evaluate()
         {
-            
-            float distance = Vector3.Distance(target.position , origin.position);
+
+            if (target == null)
+                return NodeState.Failure;
             GameObject A = callback(range);
-            
 
-            //return distance <= range ? NodeState.Success : NodeState.Failure;
             return A != null ? NodeState.Success : NodeState.Failure;
-
+            
+            //float distance = Vector3.Distance(target.position , origin.position);
+            //return distance <= range ? NodeState.Success : NodeState.Failure;
         }
     }
 }

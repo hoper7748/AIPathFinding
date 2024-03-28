@@ -25,8 +25,10 @@ namespace BT
             Transform coverSpot = ai.GetBestCoverSpot();
             if (coverSpot == null)
                 return NodeState.Failure;
+
             ai.SetColor(Color.blue);
             float distance = Vector3.Distance(coverSpot.position, agent.transform.position);
+
             if(distance > 0.2f)
             {
                 agent.isStopped = false;
