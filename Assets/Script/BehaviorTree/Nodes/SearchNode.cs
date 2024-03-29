@@ -8,15 +8,15 @@ namespace BT
     public class SearchNode : BT.Node
     {
         private float range;
-        private Transform target;
-        private Transform origin;
+        private GameObject target;
+        private EnemyAI ai;
         public Func<float, GameObject> callback;
 
-        public SearchNode(float _range, Transform _target, Transform _origin, Func<float, GameObject> _callBack, string _name)
+        public SearchNode(float _range, EnemyAI _ai, Func<float, GameObject> _callBack, string _name)
         {
             range = _range;
-            target = _target;
-            origin = _origin;
+            //target = _target.gameObject;
+            ai = _ai;
             callback = _callBack;
             name = _name;
         }
@@ -24,14 +24,17 @@ namespace BT
         public override NodeState Evaluate()
         {
 
+            target = callback(range);
             if (target == null)
+            {
+                ai.NowTarget = null;
                 return NodeState.Failure;
-            GameObject A = callback(range);
-
-            return A != null ? NodeState.Success : NodeState.Failure;
-            
-            //float distance = Vector3.Distance(target.position , origin.position);
-            //return distance <= range ? NodeState.Success : NodeState.Failure;
+            }
+            //if (target == null && ai.movingPoint != null)
+            //    return NodeState.Success;
+            ai.NowTarget = target.transform;
+            ai.movingPoint = null;
+            return target != null ? NodeState.Success : NodeState.Failure;
         }
     }
 }

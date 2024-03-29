@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using System;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 namespace BT
 {
@@ -35,32 +35,32 @@ namespace BT
             // 아무것도 하지 않는 상태.
             // 목표물 탐색
 
-            if (agent.hasPath)
-                return NodeState.Failure;
+            if (agent.hasPath || ai.movingPoint != null)
+                return NodeState.Running;
 
             ai.SetColor(Color.cyan);
-
             curTimer += Time.deltaTime;
-            if(curTimer > readyTimer)
+            if (curTimer > readyTimer && ai.movingPoint == null)
             {
                 // 일정 시간이 지났으므로 새로운 위치 탐색 시작.
                 RandomPointSearch();
                 curTimer = 0;
-            }
+                return NodeState.Success;
 
-            return NodeState.Running;
+            }
+            return NodeState.Failure;
         }
 
         // 새로운 좌표를 서치하게 하는 매서드
         public bool RandomPointSearch()
         {
-            NavMeshHit hit;
-            if(NavMesh.SamplePosition(ai.transform.position, out hit, 1.0f, NavMesh.AllAreas))
+            NavMeshHit hit; 
+            for(int i = 0; i < 30; i ++)
             {
-                for(int i = 0; i < 30; i++)
+                Vector3 randomPoint = ai.transform.position + Random.insideUnitSphere * 10f;
+                if (NavMesh.SamplePosition(randomPoint, out hit, 1.0f, NavMesh.AllAreas))
                 {
-                    //Tuple<Vector3, bool> a = (Vector3 a = hit.position, bool b = true);
-                    //ai.movingPoint = ;
+                    ai.movingPoint = System.Tuple.Create(hit.position, false);
                     return true;
                 }
             }

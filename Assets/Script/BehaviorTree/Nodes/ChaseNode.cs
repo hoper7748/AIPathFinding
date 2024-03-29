@@ -8,13 +8,11 @@ namespace BT
 {
     public class ChaseNode : BT.Node
     {
-        private Transform target;
         private NavMeshAgent agent;
         private EnemyAI ai;
 
-        public ChaseNode(Transform _target, NavMeshAgent _agent, EnemyAI _ai, string _name)
+        public ChaseNode(NavMeshAgent _agent, EnemyAI _ai, string _name)
         {
-            target = _target;
             agent = _agent;
             ai = _ai;
             name = _name;
@@ -22,19 +20,23 @@ namespace BT
 
         public override NodeState Evaluate()
         {
-            if (target == null) return NodeState.Failure;
+            // 둘 다 없을 경우.
+            if (ai.NowTarget == null && ai.movingPoint == null) return NodeState.Failure;
 
             ai.SetColor(Color.yellow);
-            float distance = Vector3.Distance(target.position, agent.transform.position);
-            if(distance > 0.2f)
+            Vector3 temp = ai.NowTarget == null ? ai.movingPoint.Item1 : ai.NowTarget.position;
+            float distance = Vector3.Distance(temp, agent.transform.position);
+
+            if(distance > 0.6f)
             {
                 agent.isStopped = false;
-                agent.SetDestination(target.position);
+                agent.SetDestination(temp);
                 return NodeState.Running;
             }
             else
             {
                 agent.isStopped = true;
+                ai.movingPoint = null;
                 return NodeState.Success;
             }
         }

@@ -43,6 +43,11 @@ using UnityEngine.AI;
 
 public class EnemyAI : MonoBehaviour
 {
+    /// <summary>
+    /// Field
+    /// </summary>
+    #region Fields
+    // Status
     [SerializeField] private float startingHealth;
     [SerializeField] private float lowHealthThreshold;
     [SerializeField] private float healthRestoreRate;
@@ -54,6 +59,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private Transform targetTransform;
     [SerializeField] private BT.Cover[] avaliableCovers;
     [SerializeField] private LayerMask layerMask;
+    [SerializeField] private LayerMask lay;
 
     private Material material;
     [SerializeField] private Transform bestCoverSpot;
@@ -71,6 +77,14 @@ public class EnemyAI : MonoBehaviour
     private float m_horizontalViewHalfAngle = 0f;
     private float rotateAngle = 0;
     [SerializeField] private float m_viewRotateZ = 0f;
+    #endregion
+
+    /// <summary>
+    /// Properties
+    /// </summary>
+    #region Properties
+
+    
 
     public Transform NowTarget
     {
@@ -80,9 +94,10 @@ public class EnemyAI : MonoBehaviour
         }
         set
         {
-            NowTarget = value;  
+            targetTransform = value;
         }
     }
+    #endregion
 
     #region DrawGizmos
 
@@ -112,8 +127,14 @@ public class EnemyAI : MonoBehaviour
             angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
             if (angle <= HorizontalViewAngle * .5f)
             {
+                Debug.DrawLine(originPos, originPos + dir * SearchRange, Color.yellow);
+                RaycastHit hit ;
+                if(Physics.Raycast(originPos, dir, out hit, layerMask))
+                {
+                    return hitedTarget.gameObject;
+                }
+                
                 // 타겟이 걸리면 반환.
-                return hitedTarget.gameObject;
             }
         }
         // 걸리는게 없나요? 정상입니다.
@@ -176,23 +197,23 @@ public class EnemyAI : MonoBehaviour
         BT.GoToCoverNode goToCoverNode = new BT.GoToCoverNode(agent, this, $"goToCoverNode");
         BT.HealthNode healthNode = new BT.HealthNode(this, lowHealthThreshold, $"healthNode");
         BT.IsCoveredNode isCoveredNode = new BT.IsCoveredNode(playertransform, transform, $"isCoveredNode");
-        BT.ChaseNode chaseNode = new BT.ChaseNode(playertransform, agent, this, $"chaseNode");
-        BT.SearchNode chasingRangeNode = new BT.SearchNode(chasingRange, playertransform, transform, FindViewTarget, $"chasingRangeNode");
-        BT.SearchNode shootingRangeNode = new BT.SearchNode(shootingRange, playertransform, transform, FindViewTarget, $"shootingRangeNode");
+        BT.ChaseNode chaseNode = new BT.ChaseNode(agent, this, $"chaseNode");
+        BT.SearchNode chasingRangeNode = new BT.SearchNode(chasingRange, this, FindViewTarget, $"chasingRangeNode");
+        BT.SearchNode shootingRangeNode = new BT.SearchNode(shootingRange, this, FindViewTarget, $"shootingRangeNode");
         BT.ShootNode shootNode = new BT.ShootNode(agent, this, bullet, $"ShootNode");
+        BT.HasTargetNode hasTargetNode = new BT.HasTargetNode(this);
 
-        //BT.IsTargetNode 
-
-
-
+        // 비전투 관련 
         BT.IdleNode idleNode = new BT.IdleNode(this, agent);
+
         //BT.BoundaryNode Boundary = new BT.BoundaryNode(agent);
 
-
+        BT.Sequence IdleSequence = new BT.Sequence(new List<BT.Node> { idleNode, chaseNode, hasTargetNode }, $"IdleSequence");
+        
         BT.Sequence chaseSequence = new BT.Sequence(new List<BT.Node> { chasingRangeNode, chaseNode }, $"chaseSequence");
         BT.Sequence shootSequence = new BT.Sequence(new List<BT.Node> { shootingRangeNode, shootNode }, $"shootSequence");
 
-        BT.Sequence nonCombatSequence = new BT.Sequence(new List<BT.Node> { idleNode }, $"idleSequenece");
+        BT.Selector nonCombatSequence = new BT.Selector(new List<BT.Node> { IdleSequence, chaseSequence}, $"nonCombatSequence");
         BT.Selector combatSequence = new BT.Selector(new List<BT.Node> { shootSequence, chaseSequence }, $"findEnemySequence");
 
         BT.Sequence goToCoverSequence = new BT.Sequence(new List<BT.Node> { coverAvaliableNode, goToCoverNode }, $"goToCoverSequence");
