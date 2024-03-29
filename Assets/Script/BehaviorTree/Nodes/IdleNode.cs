@@ -46,7 +46,6 @@ namespace BT
                 RandomPointSearch();
                 curTimer = 0;
                 return NodeState.Success;
-
             }
             return NodeState.Failure;
         }
@@ -65,10 +64,6 @@ namespace BT
                 }
             }
             return false;
-            
         }
-
-
     }
-
 }

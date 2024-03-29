@@ -19,7 +19,7 @@ namespace BT
 
         public override NodeState Evaluate()
         {
-            Debug.Log($"{name}");
+            //Debug.Log($"{name}");
 
             return ai.GetCurrentHealth() <= threshold ? NodeState.Success : NodeState.Failure;
         }

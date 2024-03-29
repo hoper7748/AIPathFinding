@@ -20,7 +20,7 @@ namespace BT
 
         public override NodeState Evaluate()
         {
-            Debug.Log($"{name}");
+            //Debug.Log($"{name}");
             foreach(var node in nodes)
             {
                 switch(node.Evaluate())

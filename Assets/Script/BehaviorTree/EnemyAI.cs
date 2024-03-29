@@ -18,6 +18,7 @@ using UnityEngine.AI;
 ///         3-0-1. 생각나는 상태 - 경계(대기), 탐색, 공격, 도주, 은닉, 추격, 기습, 사망
 ///         3-0-2. 은닉 시 추가 기능으로 앉는 기능(ypos - 0.5 같은거)을 추가해 숨음.
 ///         3-0-3. 상대가 나를 인지하지 못한 상태일 때 안정 사격 범위까지 들어가 사격.
+///         3-0-4. Idle 상태에서 목표 지점으로 이동 시 Player가 바라보는 방향 기준으로 코너가 나오면 코너 직전에서 멈추고 코너를 잠깐 주시해야함. 양 옆일 경우 빠르게 좌 우를 확인함.
 ///     3-1 개인전
 ///         3-1-1. 개인전의 경우 필드에 남아있는 적의 스톡을 Maanger에서 관리하고 모든 적을 죽이면 게임이 끝나도록 설정해야 함.
 ///         3-1-2. 탐색의 경우 랜덤을 지향하지만, 적을 찾고 추격 중에 놓치는 경우 바라보는 방향으로 재탐색이 진행될 예정.
@@ -83,8 +84,8 @@ public class EnemyAI : MonoBehaviour
     /// Properties
     /// </summary>
     #region Properties
-
-    
+    public bool missingTarget = false;
+    public bool hide = false;
 
     public Transform NowTarget
     {
@@ -125,16 +126,10 @@ public class EnemyAI : MonoBehaviour
 
             dot = Vector3.Dot(lookDir, dir);
             angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
-            if (angle <= HorizontalViewAngle * .5f)
+            if (angle <= HorizontalViewAngle * .5f &&
+                !Physics.Raycast(originPos, dir, Vector3.Distance(originPos, targetPos), lay))
             {
-                Debug.DrawLine(originPos, originPos + dir * SearchRange, Color.yellow);
-                RaycastHit hit ;
-                if(Physics.Raycast(originPos, dir, out hit, layerMask))
-                {
-                    return hitedTarget.gameObject;
-                }
-                
-                // 타겟이 걸리면 반환.
+                return hitedTarget.gameObject;
             }
         }
         // 걸리는게 없나요? 정상입니다.
@@ -198,17 +193,18 @@ public class EnemyAI : MonoBehaviour
         BT.HealthNode healthNode = new BT.HealthNode(this, lowHealthThreshold, $"healthNode");
         BT.IsCoveredNode isCoveredNode = new BT.IsCoveredNode(playertransform, transform, $"isCoveredNode");
         BT.ChaseNode chaseNode = new BT.ChaseNode(agent, this, $"chaseNode");
+
+        BT.IsHideObjectNode isHideObjectNode = new BT.IsHideObjectNode(this, agent);
         BT.SearchNode chasingRangeNode = new BT.SearchNode(chasingRange, this, FindViewTarget, $"chasingRangeNode");
         BT.SearchNode shootingRangeNode = new BT.SearchNode(shootingRange, this, FindViewTarget, $"shootingRangeNode");
+
         BT.ShootNode shootNode = new BT.ShootNode(agent, this, bullet, $"ShootNode");
         BT.HasTargetNode hasTargetNode = new BT.HasTargetNode(this);
 
         // 비전투 관련 
         BT.IdleNode idleNode = new BT.IdleNode(this, agent);
 
-        //BT.BoundaryNode Boundary = new BT.BoundaryNode(agent);
-
-        BT.Sequence IdleSequence = new BT.Sequence(new List<BT.Node> { idleNode, chaseNode, hasTargetNode }, $"IdleSequence");
+        BT.Sequence IdleSequence = new BT.Sequence(new List<BT.Node> { idleNode, isHideObjectNode, chaseNode, hasTargetNode }, $"IdleSequence");
         
         BT.Sequence chaseSequence = new BT.Sequence(new List<BT.Node> { chasingRangeNode, chaseNode }, $"chaseSequence");
         BT.Sequence shootSequence = new BT.Sequence(new List<BT.Node> { shootingRangeNode, shootNode }, $"shootSequence");

@@ -21,7 +21,7 @@ namespace BT
 
         public override NodeState Evaluate()
         {
-            Debug.Log($"{name}");
+            //Debug.Log($"{name}");
             Transform coverSpot = ai.GetBestCoverSpot();
             if (coverSpot == null)
                 return NodeState.Failure;

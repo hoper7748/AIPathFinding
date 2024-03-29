@@ -16,7 +16,7 @@ namespace BT
 
         public override NodeState Evaluate()
         {
-            Debug.Log("TestNode");
+            //Debug.Log("TestNode");
             return NodeState.Success;
         }
     }

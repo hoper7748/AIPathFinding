@@ -19,7 +19,7 @@ namespace BT
 
         public override NodeState Evaluate()
         {
-            Debug.Log($"{name}");
+            //Debug.Log($"{name}");
             RaycastHit hit;
             if (Physics.Raycast(origin.position, target.position - origin.position, out hit))
             {

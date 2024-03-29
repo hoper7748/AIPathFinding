@@ -18,7 +18,7 @@ namespace BT
 
         public override NodeState Evaluate()
         {
-            Debug.Log($"{name}");
+            //Debug.Log($"{name}");
             bool isAnyNodeRunning = false;
             foreach(var node in nodes)
             {
