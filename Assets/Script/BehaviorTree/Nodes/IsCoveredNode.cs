@@ -19,8 +19,10 @@ namespace BT
 
         public override NodeState Evaluate()
         {
-            //Debug.Log($"{name}");
+
             RaycastHit hit;
+
+            Debug.DrawLine(origin.position, origin.position + (target.position - origin.position).normalized * Vector3.Distance(target.position, origin.position), Color.blue);
             if (Physics.Raycast(origin.position, target.position - origin.position, out hit))
             {
                 if (hit.collider.transform != target)

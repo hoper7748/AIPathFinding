@@ -27,23 +27,21 @@ namespace BT
             ai = _ai;
             agent = _agent;
             // 스폰되고 다음 행동까지의 대기 시간.
-            readyTimer = Random.Range(1f, 5f);
+            readyTimer = Random.Range(1f, 2f);
         }
 
         public override NodeState Evaluate()
         {
             // 아무것도 하지 않는 상태.
             // 목표물 탐색
-
-            if (agent.hasPath || ai.movingPoint != null)
-                return NodeState.Running;
-
             ai.SetColor(Color.cyan);
             curTimer += Time.deltaTime;
             if (curTimer > readyTimer && ai.movingPoint == null)
             {
+                agent.angularSpeed = 120;
                 // 일정 시간이 지났으므로 새로운 위치 탐색 시작.
                 RandomPointSearch();
+                readyTimer = Random.Range(1f, 2f);
                 curTimer = 0;
                 return NodeState.Success;
             }

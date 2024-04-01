@@ -21,8 +21,8 @@ namespace BT
 
         public override NodeState Evaluate()
         {
-            Debug.DrawLine(ai.transform.position, ai.transform.forward * 10f);
-            //Debug.Log($"{name}");
+            //Debug.DrawLine(ai.transform.position, ai.transform.forward * 10f);
+
             Transform bestSpot = FindBestCoverSpot();
             ai.SetBestCoverSopt(bestSpot);
             return bestSpot != null ? NodeState.Success : NodeState.Failure; 
@@ -36,11 +36,9 @@ namespace BT
             {
                 // 목표 지점으로 가는 길에 상대방이 존재.
                 if(ai.FindViewTarget(30f) == null)
-                {
-                    Debug.Log("AA");
                     return ai.GetBestCoverSpot();
-                }
             }
+
             float minAngle = 90;
             Transform bestSpot = null;
             for(int i =0; i < avaliableCovers.Length; i++)
@@ -82,9 +80,7 @@ namespace BT
             if(Physics.Raycast(spot .position, direction, out hit))
             {
                 if(hit.collider.transform != target)
-                {
                     return true;
-                }
             }
 
             return false;
@@ -94,7 +90,7 @@ namespace BT
         private bool CheckIfSpotIsValid(Transform spot)
         {
             RaycastHit hit;
-            // target to spot pos;
+
             Vector3 direction = target.position - spot.position;
 
             if(Physics.Raycast(spot.position, direction, out hit))

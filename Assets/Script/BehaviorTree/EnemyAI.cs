@@ -150,7 +150,7 @@ public class EnemyAI : MonoBehaviour
         Vector3 lookDir = AngleToDirY(transform, m_viewRotateZ);
 
         Debug.DrawRay(originPos, horizontalLeftDir * chasingRange, Color.cyan);
-        Debug.DrawRay(originPos, lookDir * chasingRange, Color.green);
+        //Debug.DrawRay(originPos, lookDir * chasingRange, Color.green);
         Debug.DrawRay(originPos, horizontalRightDir * chasingRange, Color.cyan);
 
     }
@@ -194,7 +194,10 @@ public class EnemyAI : MonoBehaviour
         BT.IsCoveredNode isCoveredNode = new BT.IsCoveredNode(playertransform, transform, $"isCoveredNode");
         BT.ChaseNode chaseNode = new BT.ChaseNode(agent, this, $"chaseNode");
 
+        BT.GoToDestinationNode goToDestinationNode = new BT.GoToDestinationNode(this, agent);
+        BT.IsDestinationNode isDestinationNode = new BT.IsDestinationNode(this, agent);
         BT.IsHideObjectNode isHideObjectNode = new BT.IsHideObjectNode(this, agent);
+
         BT.SearchNode chasingRangeNode = new BT.SearchNode(chasingRange, this, FindViewTarget, $"chasingRangeNode");
         BT.SearchNode shootingRangeNode = new BT.SearchNode(shootingRange, this, FindViewTarget, $"shootingRangeNode");
 
@@ -204,20 +207,27 @@ public class EnemyAI : MonoBehaviour
         // 비전투 관련 
         BT.IdleNode idleNode = new BT.IdleNode(this, agent);
 
-        BT.Sequence IdleSequence = new BT.Sequence(new List<BT.Node> { idleNode, isHideObjectNode, chaseNode, hasTargetNode }, $"IdleSequence");
+        // Boundary는 Idle 상태일 때 주변을 둘러보는 노드.
+        BT.BoundaryNode boundaryNode = new BT.BoundaryNode(this,agent);
+
+        // Behaivor Tree
+        //BT.Selector selector
+        BT.Sequence goToDestinationSequence = new BT.Sequence(new List<BT.Node> {isDestinationNode, goToDestinationNode}, $"goToDestinationSequence");
+        BT.Sequence IdleTestSequence = new BT.Sequence(new List<BT.Node> { idleNode }, $"IdleTestSequence");
+        BT.Sequence IdleSequence = new BT.Sequence(new List<BT.Node> { idleNode, isHideObjectNode, chaseNode }, $"IdleSequence");
         
         BT.Sequence chaseSequence = new BT.Sequence(new List<BT.Node> { chasingRangeNode, chaseNode }, $"chaseSequence");
         BT.Sequence shootSequence = new BT.Sequence(new List<BT.Node> { shootingRangeNode, shootNode }, $"shootSequence");
 
-        BT.Selector nonCombatSequence = new BT.Selector(new List<BT.Node> { IdleSequence, chaseSequence}, $"nonCombatSequence");
-        BT.Selector combatSequence = new BT.Selector(new List<BT.Node> { shootSequence, chaseSequence }, $"findEnemySequence");
+        BT.Selector nonBattleSelector = new BT.Selector(new List<BT.Node> { goToDestinationSequence, IdleTestSequence }, $"nonCombatSequence");
+        BT.Selector battleSelector = new BT.Selector(new List<BT.Node> { shootSequence, chaseSequence }, $"findEnemySequence");
 
         BT.Sequence goToCoverSequence = new BT.Sequence(new List<BT.Node> { coverAvaliableNode, goToCoverNode }, $"goToCoverSequence");
         BT.Selector findCoverSelector = new BT.Selector(new List<BT.Node> { goToCoverSequence, chaseSequence }, $"findCoverSelector");
         BT.Selector tryToTakeCoverSelector = new BT.Selector(new List<BT.Node> { isCoveredNode, findCoverSelector }, $"tryToTakeCoverSelector");
         BT.Sequence mainCoverSequence = new BT.Sequence(new List<BT.Node> { healthNode, tryToTakeCoverSelector }, $"mainCoverSequence");
 
-        topNode = new BT.Selector(new List<BT.Node> { mainCoverSequence, combatSequence, nonCombatSequence }, $"topNode");
+        topNode = new BT.Selector(new List<BT.Node> { mainCoverSequence, battleSelector, nonBattleSelector }, $"topNode");
     }
 
     public float GetCurrentHealth()

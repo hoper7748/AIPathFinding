@@ -14,9 +14,11 @@ namespace BT
     // 
     public class BoundaryNode : BT.Node
     {
+        EnemyAI ai;
         NavMeshAgent agent;
-        public BoundaryNode(NavMeshAgent _agent)
+        public BoundaryNode(EnemyAI _ai ,NavMeshAgent _agent)
         {
+            ai = _ai;
             agent = _agent; 
         }
 
