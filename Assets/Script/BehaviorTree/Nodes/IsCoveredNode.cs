@@ -7,12 +7,12 @@ namespace BT
     public class IsCoveredNode : BT.Node
     {
 
-        private Transform target;
-        private Transform origin;
+        //private Transform target;
+        private EnemyAI origin;
 
-        public IsCoveredNode(Transform _target, Transform _origin, string _name)
+        public IsCoveredNode(Transform _target, EnemyAI _origin, string _name)
         {
-            target = _target;
+            //target = _target;
             origin = _origin;
             name = _name;
         }
@@ -22,10 +22,10 @@ namespace BT
 
             RaycastHit hit;
 
-            Debug.DrawLine(origin.position, origin.position + (target.position - origin.position).normalized * Vector3.Distance(target.position, origin.position), Color.blue);
-            if (Physics.Raycast(origin.position, target.position - origin.position, out hit))
+            //Debug.DrawLine(origin.transform.position, origin.transform.position + (origin.NowTarget.position - origin.transform.position).normalized * Vector3.Distance(origin.NowTarget.position, origin.transform.position), Color.blue);
+            if (Physics.Raycast(origin.transform.position, origin.NowTarget.position - origin.transform.position, out hit))
             {
-                if (hit.collider.transform != target)
+                if (hit.collider.transform != origin.NowTarget)
                 {
                     return NodeState.Success;
                 }

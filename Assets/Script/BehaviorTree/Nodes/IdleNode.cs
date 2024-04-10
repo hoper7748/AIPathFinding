@@ -54,7 +54,7 @@ namespace BT
             NavMeshHit hit; 
             for(int i = 0; i < 30; i ++)
             {
-                Vector3 randomPoint = ai.transform.position + Random.insideUnitSphere * 10f;
+                Vector3 randomPoint = ai.transform.position + Random.insideUnitSphere * 30f;
                 if (NavMesh.SamplePosition(randomPoint, out hit, 1.0f, NavMesh.AllAreas))
                 {
                     ai.movingPoint = System.Tuple.Create(hit.position, false);

@@ -22,11 +22,13 @@ namespace BT
             if (ai.NowTarget == null && ai.movingPoint == null) return NodeState.Failure;
 
             ai.SetColor(Color.yellow);
-            Vector3 temp = ai.movingPoint.Item1;
+            Vector3 temp = ai.NowTarget == null ? ai.movingPoint.Item1 : ai.NowTarget.position;
 
             float distance = Vector3.Distance(temp, agent.transform.position);
-            if (distance > 1f)
+            if (distance > 1.0f)
             {
+                //Debug.Log($"navmesh Distance = {agent.remainingDistance }");
+                //Debug.Log($"world Space Distance = {Vector3.Distance(ai.movingPoint.Item1, ai.transform.position).ToString()}");
                 agent.isStopped = false;
                 agent.SetDestination(temp);
                 return NodeState.Running;
