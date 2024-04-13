@@ -175,6 +175,34 @@ namespace BT
             }
         }
 
+        public bool HavingMoivngPointNearWall()
+        {
+            // 이제 벽에 계속 붙어있다는 것을 어떻게 체크 할 것인가?
+            if (ai.movingPoint != null)
+            {
+                if (!isWall && !isNearWall)
+                    WallCheck();
+                else if (isNearWall)
+                {
+                    NearTheWall();
+                }
+                else
+                {
+                    // 거리를 확인해서 벽에 붙었다면? 벽이 사라질 때를 체크 해야함. 어떻게 체크를 해야 할까?
+                    float distance = Vector3.Distance(ai.transform.position, agent.destination);
+
+                    if (distance < 0.5f)
+                    {
+                        isWall = false;
+                        isNearWall = true;
+                        ai.movingPoint = System.Tuple.Create(originTarget.Item1, false);
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
 
         public override NodeState Evaluate()
         {
@@ -213,25 +241,8 @@ namespace BT
 
                 //return NodeState.Running;
                 #endregion
-                // 이제 벽에 계속 붙어있다는 것을 어떻게 체크 할 것인가?
-                if(!isWall && !isNearWall)
-                    WallCheck();
-                else if(isNearWall)
-                {
-                    NearTheWall();
-                }
-                else
-                {
-                    // 거리를 확인해서 벽에 붙었다면? 벽이 사라질 때를 체크 해야함. 어떻게 체크를 해야 할까?
-                    float distance = Vector3.Distance(ai.transform.position, agent.destination);
-
-                    if(distance < 0.5f)
-                    {
-                        isWall = false;
-                        isNearWall = true;
-                        ai.movingPoint = System.Tuple.Create(originTarget.Item1, false);
-                    }
-                }
+                if (HavingMoivngPointNearWall())
+                    return NodeState.Success;
 
                 if (!agent.hasPath && ai.movingPoint == null)
                     return NodeState.Failure;

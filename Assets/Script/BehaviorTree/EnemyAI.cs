@@ -73,7 +73,8 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private Bullet bullet;             // 공격 시 필요로 하게 되는 탄환 아직 미설정
 
     [SerializeField] private float currentHealth;
-    [HideInInspector] public Vector3 _movingPoint;
+    [SerializeField] private GameObject WayPoint;
+    [HideInInspector] public Transform[] WayPoints;
     [HideInInspector] public Tuple<Vector3, bool> movingPoint;
 
     private const float HorizontalViewAngle = 75f;
@@ -109,6 +110,13 @@ public class EnemyAI : MonoBehaviour
             targetTransform = value;
         }
     }
+
+    public float getCurrentHealth
+    {
+        get { return currentHealth; }
+        set { currentHealth = Mathf.Clamp(value, 0, startingHealth); }
+    }
+
     #endregion
 
     #region DrawGizmos
@@ -120,11 +128,6 @@ public class EnemyAI : MonoBehaviour
         return new Vector3(Mathf.Sin(radian), 0f, Mathf.Cos(radian));
         #endregion
     }
-
-    //public GameObject FIndViewWall(float SearchRange)
-    //{
-
-    //}
 
     public GameObject FindViewTarget(float SearchRange, LayerMask layer)
     {
@@ -179,12 +182,6 @@ public class EnemyAI : MonoBehaviour
     }
     #endregion
 
-    public float getCurrentHealth
-    {
-        get { return currentHealth; }
-        set { currentHealth = Mathf.Clamp(value, 0, startingHealth); }
-    }
-
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -196,13 +193,26 @@ public class EnemyAI : MonoBehaviour
         // cover 갯수만큼 재생성
         isDead = false;
         covers = GameObject.Find("Covers");
-        avaliableCovers = new BT.Cover[covers.transform.childCount];
-        for(int i =0; i < covers.transform.childCount; i++)
-        {
-            avaliableCovers[i] = covers.transform.GetChild(i).GetComponent<BT.Cover>();
-        }
+        WayPoint = GameObject.Find("WayPoints");
+        //avaliableCovers = new BT.Cover[covers.transform.childCount];
+        //for(int i =0; i < covers.transform.childCount; i++)
+        //{
+        //    avaliableCovers[i] = covers.transform.GetChild(i).GetComponent<BT.Cover>();
+        //}
+        GetTransformChildren(ref avaliableCovers, covers.transform);
+        GetTransformChildren(ref WayPoints, WayPoint.transform);
         getCurrentHealth = startingHealth;
         ConstructBehaviorTree();
+    }
+
+
+    private void GetTransformChildren<T>(ref T[] Container, Transform getChild)
+    {
+        Container = new T[getChild.childCount];
+        for(int i =0; i < getChild.childCount; i++)
+        {
+            Container[i] = getChild.GetChild(i).GetComponent<T>();
+        }
     }
 
     private void ConstructBehaviorTree()

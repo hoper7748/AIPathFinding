@@ -51,10 +51,12 @@ namespace BT
         // 새로운 좌표를 서치하게 하는 매서드
         public bool RandomPointSearch()
         {
-            NavMeshHit hit; 
+            NavMeshHit hit;
+            Transform tf = ai.WayPoints[Random.Range(0, ai.WayPoints.Length)];
+            
             for(int i = 0; i < 30; i ++)
             {
-                Vector3 randomPoint = ai.transform.position + Random.insideUnitSphere * 30f;
+                Vector3 randomPoint = tf.position + Random.insideUnitSphere * 2.5f;
                 if (NavMesh.SamplePosition(randomPoint, out hit, 1.0f, NavMesh.AllAreas))
                 {
                     ai.movingPoint = System.Tuple.Create(hit.position, false);
