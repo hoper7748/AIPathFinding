@@ -44,20 +44,19 @@ namespace BT
             Vector3 dir_L = (origin - origin_L).normalized;
 
             RaycastHit Rhit;
-            NavMeshHit Nhit;
 
             if (HideDirection.None == h_Direction)
             {
                 if (Physics.Raycast(origin, dir_L, out Rhit, 2f))
                 {
                     h_Direction = HideDirection.Right;
-                    ai.movingPoint = System.Tuple.Create(Rhit.point, false);
+                    ai.movingPoint = System.Tuple.Create(Rhit.point);
                     originTarget = System.Tuple.Create(agent.destination);
                 }
                 if (Physics.Raycast(origin, dir_R, out Rhit, 2f))
                 {
                     h_Direction = HideDirection.Left;
-                    ai.movingPoint = System.Tuple.Create(Rhit.point, false);
+                    ai.movingPoint = System.Tuple.Create(Rhit.point);
                     originTarget = System.Tuple.Create(agent.destination);
                 }
             }
@@ -100,20 +99,19 @@ namespace BT
             Vector3 dir_L = (origin - origin_L).normalized;
 
             RaycastHit Rhit;
-            NavMeshHit Nhit;
 
             if (HideDirection.None == h_Direction)
             {
                 if (Physics.Raycast(origin, dir_L, out Rhit, 2f))
                 {
                     h_Direction = HideDirection.Right;
-                    ai.movingPoint = System.Tuple.Create(Rhit.point, false);
+                    ai.movingPoint = System.Tuple.Create(Rhit.point);
                     originTarget = System.Tuple.Create(agent.destination);
                 }
                 if (Physics.Raycast(origin, dir_R, out Rhit, 2f))
                 {
                     h_Direction = HideDirection.Left;
-                    ai.movingPoint = System.Tuple.Create(Rhit.point, false);
+                    ai.movingPoint = System.Tuple.Create(Rhit.point);
                     originTarget = System.Tuple.Create(agent.destination);
                 }
             }
@@ -154,7 +152,7 @@ namespace BT
             if (Physics.Raycast(ai.transform.position, horizontalLeftDir, out hit, 3f) || Physics.Raycast(ai.transform.position, horizontalRightDir, out hit, 3f))
             {
                 originTarget = System.Tuple.Create(ai.movingPoint.Item1);
-                ai.movingPoint = System.Tuple.Create(hit.point, false);
+                ai.movingPoint = System.Tuple.Create(hit.point);
                 isWall = true;
             }
         }
@@ -183,19 +181,17 @@ namespace BT
                 if (!isWall && !isNearWall)
                     WallCheck();
                 else if (isNearWall)
-                {
                     NearTheWall();
-                }
                 else
                 {
                     // 거리를 확인해서 벽에 붙었다면? 벽이 사라질 때를 체크 해야함. 어떻게 체크를 해야 할까?
                     float distance = Vector3.Distance(ai.transform.position, agent.destination);
 
-                    if (distance < 0.5f)
+                    if (distance <= 0.5f)
                     {
                         isWall = false;
                         isNearWall = true;
-                        ai.movingPoint = System.Tuple.Create(originTarget.Item1, false);
+                        ai.movingPoint = System.Tuple.Create(originTarget.Item1);
                     }
                 }
                 return true;
@@ -240,6 +236,7 @@ namespace BT
                 //}
 
                 //return NodeState.Running;
+
                 #endregion
                 if (HavingMoivngPointNearWall())
                     return NodeState.Success;

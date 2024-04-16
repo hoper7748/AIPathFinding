@@ -26,16 +26,16 @@ namespace BT
         {
             #region legacy
             //target = ai.NowTarget == null ? callback(range) : ai.NowTarget.gameObject;       // 이게 계속 들어가서 연산을 하니 지금 아무것도 못하는거거든? 그렇다면 코드 최적화를 해보자.
-            target = callback(range, 1 << 4);
+            target = callback(range, 1 << 9);
             if (target == null)
             {
                 if (ai.NowTarget != null)
-                    ai.movingPoint = System.Tuple.Create(ai.NowTarget.position, false);
-                if (ai.lostTarget == false)
+                    ai.movingPoint = System.Tuple.Create(ai.NowTarget.position);
+                if (ai.lostTarget == false && ai.isRun == false)
                 {
                     ai.lostTarget = true;
                 }
-                //ai.NowTarget = null;
+                ai.NowTarget = null;
                 return NodeState.Failure;
             }
             ai.lostTarget = false;
@@ -43,6 +43,7 @@ namespace BT
             ai.movingPoint = null;
             return target != null ? NodeState.Success : NodeState.Failure;
             #endregion
+
             # region TestCode
             //try
             //{
@@ -74,7 +75,7 @@ namespace BT
             //ai.lostTarget = false;
             //ai.movingPoint = null;
             //return NodeState.Success;
-        #endregion
+            #endregion
         }
 
         private bool CantSeeTarget()
