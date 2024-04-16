@@ -8,12 +8,12 @@ namespace BT
     {
 
         //private Transform target;
-        private EnemyAI ai;
+        private EnemyAI origin;
 
-        public IsCoveredNode(Transform _target, EnemyAI _ai, string _name)
+        public IsCoveredNode(Transform _target, EnemyAI _origin, string _name)
         {
             //target = _target;
-            ai = _ai;
+            origin = _origin;
             name = _name;
         }
 
@@ -21,22 +21,12 @@ namespace BT
         {
 
             RaycastHit hit;
-            if(ai.NowTarget == null)
-            {
-                return NodeState.Failure;
-            }
 
-
-            // Target이 없으면?
             //Debug.DrawLine(origin.transform.position, origin.transform.position + (origin.NowTarget.position - origin.transform.position).normalized * Vector3.Distance(origin.NowTarget.position, origin.transform.position), Color.blue);
-            if (Physics.Raycast(ai.transform.position, ai.NowTarget.position - ai.transform.position, out hit))
+            if (Physics.Raycast(origin.transform.position, origin.NowTarget.position - origin.transform.position, out hit))
             {
-                if (hit.collider.transform != ai.NowTarget)
+                if (hit.collider.transform != origin.NowTarget)
                 {
-                    ai.NowTarget = null;
-                    ai.isHide = true;
-                    ai.isRun = false;
-                    ai.movingPoint = null;
                     return NodeState.Success;
                 }
             }

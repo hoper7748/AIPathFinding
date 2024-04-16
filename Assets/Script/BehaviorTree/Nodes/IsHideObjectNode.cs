@@ -43,13 +43,13 @@ namespace BT
                 if (Physics.Raycast(origin, dir_R, out hit, 2f))
                 {
                     h_Direction = HideDirection.Right;
-                    ai.movingPoint = System.Tuple.Create(hit.point);
+                    ai.movingPoint = System.Tuple.Create(hit.point, false);
                     v = System.Tuple.Create(agent.destination);
                 }
                 if (Physics.Raycast(origin, dir_L, out hit, 2f))
                 {
                     h_Direction = HideDirection.Left;
-                    ai.movingPoint = System.Tuple.Create(hit.point);
+                    ai.movingPoint = System.Tuple.Create(hit.point, false);
                     v = System.Tuple.Create(agent.destination);
                 }
             }
@@ -63,7 +63,7 @@ namespace BT
                             {
                                 // 대상이 없으면? 
                                 h_Direction = HideDirection.None;
-                                ai.movingPoint = System.Tuple.Create(v.Item1);
+                                ai.movingPoint = System.Tuple.Create(v.Item1, false);
                             }
                             break;
                         }
@@ -73,7 +73,7 @@ namespace BT
                             {
                                 // 대상이 없으면? 
                                 h_Direction = HideDirection.None;
-                                ai.movingPoint = System.Tuple.Create(v.Item1);
+                                ai.movingPoint = System.Tuple.Create(v.Item1, false);
                             }
                             break;
                         }
@@ -100,7 +100,7 @@ namespace BT
             }
             if(Vector3.Distance(ai.transform.position, agent.destination) < 1)
             {
-                ai.movingPoint = System.Tuple.Create(v.Item1);
+                ai.movingPoint = System.Tuple.Create(v.Item1, false);
             }
             return NodeState.Running;
             throw new System.NotImplementedException();

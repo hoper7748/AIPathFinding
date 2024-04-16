@@ -47,7 +47,7 @@ public class Bullet : MonoBehaviour
             return;
         if (other.CompareTag("Player") )
         {
-            other.GetComponent<EnemyAI>().GetDamage(Oner);
+            other.GetComponent<EnemyAI>().GetDamage();
         }
             Destroy(this.gameObject);
     }

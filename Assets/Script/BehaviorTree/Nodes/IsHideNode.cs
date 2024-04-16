@@ -18,18 +18,15 @@ namespace BT
 
         public override NodeState Evaluate()
         {
-            if (!ai.isHide)
+            if (!ai.hide)
             {
                 return NodeState.Failure;
             }
 
-            if (ai.GetCurrentHealth() > 50)
-                ai.isHide = false;
-
             if(ai.GetCurrentHealth() >= 100)
             {
                 ai.getCurrentHealth = 100;
-                //ai.hide = false;
+                ai.hide = false;
 
                 return NodeState.Failure;
             }

@@ -59,7 +59,7 @@ namespace BT
                 Vector3 randomPoint = tf.position + Random.insideUnitSphere * 2.5f;
                 if (NavMesh.SamplePosition(randomPoint, out hit, 1.0f, NavMesh.AllAreas))
                 {
-                    ai.movingPoint = System.Tuple.Create(hit.position);
+                    ai.movingPoint = System.Tuple.Create(hit.position, false);
                     return true;
                 }
             }
