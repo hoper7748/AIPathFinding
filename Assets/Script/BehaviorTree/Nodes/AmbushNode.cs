@@ -21,7 +21,7 @@ namespace BT
             // 현재 숨어있는 상태
 
             // 타겟이 없으면 타겟을 찾아주고 있으면 그대로 가져간다. -> 연산 최소화를 위해 사망연산자를 사용 
-            target = target == null ? ai.FindViewTarget(30f, 1 << 4).transform : target;    
+            target = target == null ? ai.FindViewTarget(30f, 1 << 9).transform : target;    
             if(target == null)
             {
                 // 없다는 뜻은 아직 찾고있다는 뜻.

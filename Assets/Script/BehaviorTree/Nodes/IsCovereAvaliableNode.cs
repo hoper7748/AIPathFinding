@@ -20,18 +20,65 @@ namespace BT
         {
             avaliableCovers = _avaliableCovers;
             agent = _agent;
-            //target = _ai.NowTarget;
             ai = _ai;
             name = _name;
         }
 
         public override NodeState Evaluate()
         {
-            //Debug.DrawLine(ai.transform.position, ai.transform.forward * 10f);
+            // 조건을 이렇게 찾으면 안됨!!!!
+            // 현재 발각이 됐는가 부터 시작하여 다양한 경우의 수를 둬야함.
 
-            Transform bestSpot = FindBestCoverSpot();
-            ai.SetBestCoverSopt(bestSpot);
-            return bestSpot != null ? NodeState.Success : NodeState.Failure; 
+            // 현재 바라보는 방향에 적이 있는가?
+            GameObject targets = ai.FindViewTarget(30f, 1 << 9);
+            if (ai.GetBestCoverSpot() == null || targets != null)
+            {
+                Transform bestSpot = FindCover();
+                ai.SetBestCoverSopt(bestSpot);
+                return bestSpot != null ? NodeState.Success : NodeState.Failure;
+            }
+            return NodeState.Running;
+        }
+        private Transform FindCover()
+        {
+            Collider[] cols = Physics.OverlapSphere(ai.transform.position, 20f);
+            Transform Temp = null;
+            Transform faraway = null;
+            float distanceOld = 0.0f;
+            float distanceNew = 0.0f;
+            for (int i = 0; i < cols.Length;  i++)
+            {
+                // 가장 먼 곳으로 가야함.
+                if(faraway == null)
+                {
+                    faraway = cols[i].transform;
+                    distanceOld = Vector3.Distance(ai.transform.position, faraway.position);
+                }
+                else
+                {
+                    // 거리를 비교해서 가장 먼 곳에 간다.
+                    distanceOld = Vector3.Distance(ai.transform.position, faraway.position);
+                    distanceNew = Vector3.Distance(ai.transform.position, cols[i].transform.position);
+                    if(distanceNew >= distanceOld)
+                    {
+                        // 멀다? 그럼 변경
+                        faraway = cols[i].transform;
+                        distanceOld = distanceNew;
+                    }
+                }
+            }
+
+            float minAngle = 90;
+
+            if (faraway != null)
+            {
+                faraway = FindBestSpotInCover(faraway.GetComponent<Cover>(), ref minAngle);
+            }
+
+            //GameObject obj = new GameObject();
+            //obj.transform.position = faraway == null ? Vector3.zero : faraway.position;
+            return faraway;
+            
         }
 
         private Transform FindBestCoverSpot()
@@ -41,7 +88,7 @@ namespace BT
             if(ai.GetBestCoverSpot() != null)
             {
                 // 목표 지점으로 가는 길에 상대방이 존재.
-                if(ai.FindViewTarget(30f, 1 << 4) == null)
+                if(ai.FindViewTarget(30f, 1 << 9) == null)
                     return ai.GetBestCoverSpot();
             }
             // Spot찾는 알고리즘을 변경
@@ -97,6 +144,8 @@ namespace BT
 
             #endregion
 
+
+
             #region legarcy
 
             float minAngle = 90;
@@ -107,37 +156,37 @@ namespace BT
                 if (bestSpotInCover != null)
                     bestSpot = bestSpotInCover;
             }
+
             return bestSpot;
 
             #endregion
-        }
-
-        private float OriginToSpotbyCost(Transform tf)
-        {
-            // 일단 찾아보자 .
-
-
-            return 0;
         }
         
 
         private Transform FindBestSpotInCover(Cover cover, ref float minAngle)
         {
-            Transform[] avaliableSpots = cover.GetCoverSpots();
             Transform bestSpot = null;
-            for(int i =0; i < avaliableSpots.Length;i++)
+            try
             {
-                Vector3 direction = ai.NowTarget.position - avaliableSpots[i].position;
-                if (CheckIfSpotIsValid(avaliableSpots[i]))
+                Transform[] avaliableSpots = cover.GetCoverSpots();
+                for (int i = 0; i < avaliableSpots.Length; i++)
                 {
-                    float angle = Vector3.Angle(avaliableSpots[i].forward, direction);
-
-                    if(angle < minAngle)
+                    Vector3 direction = ai.NowTarget.position - avaliableSpots[i].position;
+                    if (CheckIfSpotIsValid(avaliableSpots[i]))
                     {
-                        minAngle = angle; 
-                        bestSpot = avaliableSpots[i];
+                        float angle = Vector3.Angle(avaliableSpots[i].forward, direction);
+
+                        if (angle < minAngle)
+                        {
+                            minAngle = angle;
+                            bestSpot = avaliableSpots[i];
+                        }
                     }
                 }
+            }
+            catch
+            {
+                Debug.Log("AA");
             }
             return bestSpot;
         }

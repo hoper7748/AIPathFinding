@@ -19,10 +19,11 @@ namespace BT
         {
 
             // 둘 다 없을 경우.
-            if (ai.NowTarget == null && ai.movingPoint == null) return NodeState.Failure;
+            if (/*ai.NowTarget == null &&*/ ai.movingPoint == null) return NodeState.Failure;
 
             ai.SetColor(Color.yellow);
-            Vector3 temp = ai.NowTarget == null ? ai.movingPoint.Item1 : ai.NowTarget.position;
+            //Vector3 temp = ai.NowTarget == null ? ai.movingPoint.Item1 : ai.NowTarget.position;
+            Vector3 temp = ai.movingPoint.Item1;
 
             float distance = Vector3.Distance(temp, agent.transform.position);
             if (distance > 1.0f)

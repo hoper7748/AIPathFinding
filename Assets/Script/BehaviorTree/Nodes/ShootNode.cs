@@ -39,6 +39,9 @@ namespace BT
             {
                 // ai.nowtarget에 공격
                 // 3번? 
+                // 바라보게 하기
+                if(ai.NowTarget != null) 
+                    ai.transform.LookAt(ai.NowTarget);
                 curTimer += Time.deltaTime;
                 Vector3 lookRotation = agent.steeringTarget - ai.transform.position;
                 ai.transform.rotation = Quaternion.Lerp(ai.transform.rotation, Quaternion.LookRotation(lookRotation), 5f * Time.deltaTime);
@@ -73,21 +76,37 @@ namespace BT
 
         private void Shoot()
         {
-            Vector3 pos;
-            if (ai.NowTarget == null)
+            try
             {
-                pos = prevTarget.position + (prevTarget.forward * 3.5f) + UnityEngine.Random.insideUnitSphere * 1f;
+                Vector3 pos;
+                //Debug.Log($"{ai.NowTarget}");
+                if (ai.NowTarget == null)
+                {
+                    pos = prevTarget.position + (prevTarget.forward * 3.5f) + UnityEngine.Random.insideUnitSphere * 1f;
+
+                }
+                else
+                {
+                    Vector3 v1 = ai.NowTarget.position + (UnityEngine.Random.insideUnitSphere * 1f);
+                    Vector3 v2 = ai.NowTarget.position + (ai.NowTarget.forward * 3.5f) + UnityEngine.Random.insideUnitSphere * 1f;
+                    try
+                    {
+                        pos = v1;
+                        //pos = ai.NowTarget.GetComponent<EnemyAI>().NowTarget == ai.transform ? v1 : v2;
+                    }
+                    catch
+                    {
+                        pos = v1;
+                    }
+                    prevTarget = ai.NowTarget;
+                }
+                Bullet bullet = GameObject.Instantiate(this.bullet, shootPos.position, Quaternion.identity);
+                bullet.ShootTarget(ai.transform, pos, ai.transform.position, 1f, 0.5f);
+                GameObject.Destroy(bullet.gameObject, 2f);
             }
-            else
+            catch
             {
-                Vector3 v1 = ai.NowTarget.position + (UnityEngine.Random.insideUnitSphere * 1f);
-                Vector3 v2 = ai.NowTarget.position + (ai.NowTarget.forward * 3.5f) + UnityEngine.Random.insideUnitSphere * 1f;
-                pos = ai.NowTarget.GetComponent<EnemyAI>().NowTarget == ai.transform ? v1 : v2;
-                prevTarget = ai.NowTarget;
             }
-            Bullet bullet = GameObject.Instantiate(this.bullet, shootPos.position, Quaternion.identity);
-            bullet.ShootTarget(ai.transform, pos, ai.transform.position, 1f, 0.5f);
-            GameObject.Destroy(bullet.gameObject, 2f);
         }
     }
 }

@@ -75,9 +75,9 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float currentHealth;
     [SerializeField] private GameObject WayPoint;
     [HideInInspector] public Transform[] WayPoints;
-    [HideInInspector] public Tuple<Vector3, bool> movingPoint;
+    [HideInInspector] public Tuple<Vector3> movingPoint;
 
-    private const float HorizontalViewAngle = 75f;
+    private const float HorizontalViewAngle = 75;
     private float m_horizontalViewHalfAngle = 0f;
     private float rotateAngle = 0;
     [SerializeField] private float m_viewRotateZ = 0f;
@@ -91,7 +91,8 @@ public class EnemyAI : MonoBehaviour
     /// </summary>
     #region Properties
     public bool lostTarget = false;
-    public bool hide = false;
+    public bool isRun = false;
+    public bool isHide = false;
     public GameObject target;
     public Transform shootPos;
     public Bullet[] bulletPool;
@@ -134,8 +135,9 @@ public class EnemyAI : MonoBehaviour
         Vector3 targetPos, dir, lookDir;
         Vector3 originPos = transform.position;
         Collider[] hitedTargets = Physics.OverlapSphere(originPos, SearchRange, layerMask);
-
+        Transform faraway = null;
         float dot, angle;
+        float distanceOld, distanceNew;
 
         foreach (var hitedTarget in hitedTargets)
         {
@@ -145,15 +147,42 @@ public class EnemyAI : MonoBehaviour
 
             dot = Vector3.Dot(lookDir, dir);
             angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
+            bool hitWall = Physics.Raycast(originPos, dir, Vector3.Distance(originPos, targetPos), layer);
+            //Debug.Log($"aa = {a}");
             if (angle <= HorizontalViewAngle * .5f &&
-                !Physics.Raycast(originPos, dir, Vector3.Distance(originPos, targetPos), layer)
+                !hitWall
                 && hitedTarget != this)
             {
-                return hitedTarget.gameObject;
+                // 시야 각 내에 있으니 거리를 비교
+                // 가장 먼 곳으로 가야함.
+                if (faraway == null)
+                {
+                    faraway = hitedTarget.transform;
+                    distanceOld = Vector3.Distance(transform.position, faraway.position);
+                }
+                else
+                {
+                    // 거리를 비교해서 가장 먼 곳에 간다.
+                    distanceOld = Vector3.Distance(transform.position, faraway.position);
+                    distanceNew = Vector3.Distance(transform.position, hitedTarget.transform.position);
+                    if (distanceNew <= distanceOld)
+                    {
+                        // 가장 가까운 적을 향해 발포
+                        faraway = hitedTarget.transform;
+                        distanceOld = distanceNew;
+                    }
+                }
+                //return hitedTarget.gameObject;
             }
+            //else if (Physics.Raycast(originPos, dir, out hit, layer))
+            //{
+            //    Debug.Log($"hit >> {hit.transform.name}");
+            //}
         }
+        // 걸린 애들 중에 가장 가까운 애들을 출력
         // 걸리는게 없나요? 정상입니다.
-        return null;
+
+        return faraway == null ? null : faraway.gameObject;
     }
 
 
@@ -163,7 +192,7 @@ public class EnemyAI : MonoBehaviour
 
         Vector3 originPos = transform.position - (transform.forward * 1.5f);
 
-        //Gizmos.DrawWireSphere(originPos, chasingRange);
+        //Gizmos.DrawWireSphere(transform.position, 2);
 
         Vector3 horizontalLeftDir = AngleToDirY(transform, -m_horizontalViewHalfAngle + m_viewRotateZ);
         Vector3 horizontalRightDir = AngleToDirY(transform, m_horizontalViewHalfAngle + m_viewRotateZ);
@@ -186,6 +215,7 @@ public class EnemyAI : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         material = GetComponent<MeshRenderer>().material;
+        //Time.timeScale = 2f;
     }
 
     private void Start()
@@ -194,11 +224,6 @@ public class EnemyAI : MonoBehaviour
         isDead = false;
         covers = GameObject.Find("Covers");
         WayPoint = GameObject.Find("WayPoints");
-        //avaliableCovers = new BT.Cover[covers.transform.childCount];
-        //for(int i =0; i < covers.transform.childCount; i++)
-        //{
-        //    avaliableCovers[i] = covers.transform.GetChild(i).GetComponent<BT.Cover>();
-        //}
         GetTransformChildren(ref avaliableCovers, covers.transform);
         GetTransformChildren(ref WayPoints, WayPoint.transform);
         getCurrentHealth = startingHealth;
@@ -251,38 +276,46 @@ public class EnemyAI : MonoBehaviour
         BT.AmbushNode ambushNode = new BT.AmbushNode(this);
         BT.IsHideNode isHideNode = new BT.IsHideNode(this);
 
+        // 도망가려면 가라!
+        BT.IsRunNode isRunNode = new BT.IsRunNode(this, "");
+
         // Boundary는 Idle 상태일 때 주변을 둘러보는 노드.
         BT.BoundaryNode boundaryNode = new BT.BoundaryNode(this, agent); // 아직 적용 안됨
 
-        //BT.Sequence aliveSequence = new BT.Sequence(new List<ali>)
         BT.IsAliveNode isAliveNode = new BT.IsAliveNode(this);
         BT.DeadNode deadNode = new BT.DeadNode(this);
 
         // Behaivor Tree
+
+        // NonBattleSquence
         BT.Sequence goToDestinationSequence = new BT.Sequence(new List<BT.Node> { isDestinationNode, goToDestinationNode }, $"goToDestinationSequence");
         BT.Sequence IdleTestSequence = new BT.Sequence(new List<BT.Node> { idleNode }, $"IdleTestSequence");
-        BT.Sequence IdleSequence = new BT.Sequence(new List<BT.Node> { idleNode, isHideObjectNode, chaseNode }, $"IdleSequence");
 
+        // Battle Sequence 
         BT.Sequence chaseSequence = new BT.Sequence(new List<BT.Node> { chasingRangeNode, chaseNode }, $"chaseSequence");
         BT.Sequence shootSequence = new BT.Sequence(new List<BT.Node> { shootingRangeNode, shootNode }, $"shootSequence");
 
         BT.Selector nonBattleSelector = new BT.Selector(new List<BT.Node> { goToDestinationSequence, IdleTestSequence }, $"nonCombatSequence");
         BT.Selector battleSelector = new BT.Selector(new List<BT.Node> { shootSequence, chaseSequence }, $"findEnemySequence");
 
+        // NonBattle Nodes
         BT.Sequence goToCoverSequence = new BT.Sequence(new List<BT.Node> { coverAvaliableNode, goToCoverNode }, $"goToCoverSequence");
         BT.Selector findCoverSelector = new BT.Selector(new List<BT.Node> { goToCoverSequence, chaseSequence }, $"findCoverSelector");
         BT.Selector tryToTakeCoverSelector = new BT.Selector(new List<BT.Node> { isCoveredNode, findCoverSelector }, $"tryToTakeCoverSelector");
         BT.Sequence mainCoverSequence = new BT.Sequence(new List<BT.Node> { healthNode, tryToTakeCoverSelector }, $"mainCoverSequence");
 
-        // 삶과 죽음을 관장하는 Sequence
+        // 제 3자의 공격이 인식되었을 떄 행동 패턴.
+        BT.Sequence anotherAttackRunCoverSequence = new BT.Sequence(new List<BT.Node> {isRunNode, tryToTakeCoverSelector },"anotherAttackRunCoverSequence");
+
+        // Alive Sequence
         BT.Sequence lifeCheckSequence = new BT.Sequence(new List<BT.Node> { isAliveNode, deadNode }, $"lifeCheckSequecne");
 
-        // 매복 Sequence
+        // Hide Sequence
         // 숨었을 때 상대방이 내 눈앞에 나타나면 공격을, 아니면 대기를 하고 대기를 하는 도중 공격을 받으면 hide 상태를 풀고 재차 도망을 간다.
         BT.Sequence surpriseAttackSequence = new BT.Sequence(new List<BT.Node> { ambushNode }, "surprise Attack Nodes");
         BT.Sequence hideSequence = new BT.Sequence(new List<BT.Node> { isHideNode, shootSequence }, $"hideSequence");
        
-        topNode = new BT.Selector(new List<BT.Node> { lifeCheckSequence, hideSequence, mainCoverSequence, battleSelector, nonBattleSelector }, $"topNode");
+        topNode = new BT.Selector(new List<BT.Node> { lifeCheckSequence, hideSequence, mainCoverSequence, anotherAttackRunCoverSequence, battleSelector, nonBattleSelector }, $"topNode");
     }
 
     public float GetCurrentHealth()
@@ -301,11 +334,47 @@ public class EnemyAI : MonoBehaviour
                 SetColor(Color.red);
             }
             getCurrentHealth += Time.deltaTime * healthRestoreRate;
+            if(UnderAttack())
+            {
+                // 공격을 받으면 회피
+                //Debug.Log("헉! 누가 공격 하는거야?!");
+                // 공격을 받으면 도망가야한다.
+                isRun = true;
+                isHide = false;
+            }
         }
         else
         {
             SetColor(Color.black);
         }
+    }
+
+
+    // 공격을 받았는지 체크
+    public bool UnderAttack()
+    {
+        Collider[] bullets = Physics.OverlapSphere(transform.position, 2f, 1 << 10);
+        //Debug.Log($"bullets Count {bullets.Length}");
+        foreach(var bullet in bullets)
+        {
+            if(bullet.GetComponent<Bullet>())
+            {
+                if(NowTarget == null)
+                {
+                    // Oner Forward Vector가 this.gameobject의 forward Vector와 직교하는지 체크.
+
+                    NowTarget = bullet.GetComponent<Bullet>().getOner;
+                    return false;
+                }
+                if (bullet.GetComponent<Bullet>().getOner != NowTarget && bullet.GetComponent<Bullet>().getOner != this.transform)
+                {
+                    Debug.Log($"{bullet.GetComponent<Bullet>().getOner.name} ? {NowTarget.name}");
+                    // 다른 플레이어에게 공격을 받았다고 간주.
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public void SetColor(Color color)
@@ -343,14 +412,14 @@ public class EnemyAI : MonoBehaviour
         #endregion
     }
 
-    public void GetDamage()
+    public void GetDamage(Transform shootOner)
     {
         // 데미지를 입었다! 그럼 내가 공격을 받고 있다는 뜻인데... 그럼 반격을 하든 공격을 하든 해야겠지?
         if (!superAmmor)
         {
             // hide인 상태에서 적에게 피해를 입으면? 
             currentHealth -= 10f;
-            hide = false;   // 바로 도망쳐
+            isHide = false;   // 바로 도망쳐
         }
         else
         {
@@ -363,6 +432,12 @@ public class EnemyAI : MonoBehaviour
         isDead = true;
         Destroy(this.gameObject, 1f);
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        
+    }
+
 
     public async UniTaskVoid LostTarget()
     {
