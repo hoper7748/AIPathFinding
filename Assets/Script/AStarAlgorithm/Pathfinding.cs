@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
-namespace PathManager
+namespace pathFinding
 {
     public class Pathfinding : MonoBehaviour
     {

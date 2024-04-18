@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace PathManager
+namespace pathFinding
 {
     public struct PathRequest
     {
