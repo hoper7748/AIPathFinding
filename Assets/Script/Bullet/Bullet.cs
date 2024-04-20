@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 //[]
 public class Bullet : MonoBehaviour
 {
-    Transform Oner;
+    public Transform Oner;
     Rigidbody rigidbody;
     int damage = 0;
 

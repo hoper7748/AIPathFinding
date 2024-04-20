@@ -202,7 +202,6 @@ namespace BT
                 if(hit.collider.transform != ai.NowTarget)
                     return true;
             }
-
             return false;
         }
 

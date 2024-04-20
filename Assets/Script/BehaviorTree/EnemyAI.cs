@@ -391,6 +391,7 @@ public class EnemyAI : MonoBehaviour
     {
         return bestCoverSpot;
     }
+
     public static Vector3 CaculateVelocity(Vector3 target, Vector3 origin, float time, float height = 1.5f)
     {
         #region Omit
