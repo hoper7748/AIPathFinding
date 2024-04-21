@@ -27,8 +27,10 @@ namespace BehaviourTree
             float distance = Vector3.Distance(coverSpot.position, agent.transform.position);
             if(distance > 0.5f)
             {
-                agent.navMeshAgent.isStopped = false;
-                agent.navMeshAgent.SetDestination(coverSpot.position);
+                //agent.StopPathFinding();
+                pathFinding.PathRequestManager.RequestPath(agent.transform.position, coverSpot.position, agent.OnPathFound);
+                //agent.navMeshAgent.isStopped = false;
+                //agent.navMeshAgent.SetDestination(coverSpot.position);
 
                 return State.Running;
             }
@@ -46,15 +48,17 @@ namespace BehaviourTree
             float distance = Vector3.Distance(coverSpot.position, agent.transform.position);
             if (distance > 0.5f)
             {
-                agent.navMeshAgent.isStopped = false;
-                agent.navMeshAgent.SetDestination(coverSpot.position);
+                pathFinding.PathRequestManager.RequestPath(agent.transform.position, coverSpot.position, agent.OnPathFound);
+                //agent.navMeshAgent.isStopped = false;
+                //agent.navMeshAgent.SetDestination(coverSpot.position);
 
                 //return State.Running;
             }
             else
             {
+                agent.StopPathFinding();
                 //ai.isHide = true;
-                agent.navMeshAgent.isStopped = true;
+                //agent.navMeshAgent.isStopped = true;
                 // 돌아봐야 하는데...
                 //agent.angularSpeed = 0;
                 // 오일러 변환은 안해서 그랬네 

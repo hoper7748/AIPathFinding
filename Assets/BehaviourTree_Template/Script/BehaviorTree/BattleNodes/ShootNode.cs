@@ -16,8 +16,10 @@ namespace BehaviourTree
         public Color color;
         protected override void OnStart()
         {
-            agent.navMeshAgent.SetDestination(agent.transform.position);
-            //agent.
+            // 이건 다시 생각해보자
+            //pathFinding.PathRequestManager.RequestPath(agent.transform.position, agent.transform.position, agent.OnPathFound);
+            //agent.navMeshAgent.SetDestination(agent.transform.position);
+            agent.StopPathFinding();
         }
 
         protected override void OnStop()

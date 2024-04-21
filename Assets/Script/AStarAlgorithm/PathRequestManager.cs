@@ -59,6 +59,13 @@ namespace pathFinding
             TryProcessNext();
         }
 
+        // 지정한 위치의 노드에 이동할 수 있는지 체크
+        public static bool IsMovementPoint(Vector3 point)
+        {
+            // 포인트 까지 이동이 가능한가?.
+            return instance.Pathfinding.IsMovementPoint(point) ? true : false;
+        }
+
 
     }
 

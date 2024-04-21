@@ -34,7 +34,9 @@ namespace BehaviourTree
             //return State.Success;
             Transform bestSpot = FindCover();
 
-            agent.navMeshAgent.SetDestination(bestSpot.position);
+            pathFinding.PathRequestManager.RequestPath(agent.transform.position, bestSpot.position, agent.OnPathFound);
+
+            //agent.navMeshAgent.SetDestination(bestSpot.position);
             return bestSpot != null ? State.Success : State.Failure;
 
             //blackboard.moveToObject = bestSpot?.transform;

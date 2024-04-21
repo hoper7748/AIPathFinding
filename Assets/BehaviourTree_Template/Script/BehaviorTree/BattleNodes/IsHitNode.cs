@@ -24,7 +24,7 @@ namespace BehaviourTree
             // 피격을 당한 상태인가?
             if (agent.isHit)
             {
-                agent.isEncounter = true;
+                //agent.isEncounter = true;
 
                 return State.Success;
             }

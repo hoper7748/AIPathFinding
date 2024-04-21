@@ -8,7 +8,7 @@ namespace BehaviourTree
     {
         protected override void OnStart()
         {
-
+            //agent.isEncounter =  ? true : false;
         }
 
         protected override void OnStop()
@@ -18,7 +18,7 @@ namespace BehaviourTree
 
         protected override State OnUpdate()
         {
-            if(agent.isEncounter)
+            if(agent.target != null)
             {
                 return State.Success;
             }

@@ -808,7 +808,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 084585c4963e79c47a0a88c2a6800265
-  position: {x: 296, y: 339}
+  position: {x: 272, y: 339}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
     moveToObject: {fileID: 0}

@@ -23,6 +23,14 @@ namespace pathFinding
         {
         }
 
+        public bool IsMovementPoint(Vector3 point)
+        {
+            Node targetNode = grid.NodeFromWorldPoint(point);
+            return targetNode.walkable ? true : false;
+            //return false;
+        }
+
+
         public void StartFindPath(Vector3 startPos, Vector3 targetPos)
         {
             StartCoroutine(FindPath(startPos, targetPos));
@@ -107,8 +115,6 @@ namespace pathFinding
             }
             requestManager.FinishedProcessingPath(wayPoint, pathSuccess);
         }
-
-
 
         Vector3[] RetracePath(Node startNode, Node targetNode)
         {
