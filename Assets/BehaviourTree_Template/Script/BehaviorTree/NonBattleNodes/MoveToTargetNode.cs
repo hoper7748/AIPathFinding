@@ -12,8 +12,8 @@ namespace BehaviourTree
     {
         protected override void OnStart()
         {
-            agent.navMeshAgent.isStopped = false;
-            //agent.StopPathFinding();
+            //agent.navMeshAgent.isStopped = false;
+            agent.StopPathFinding();
         }
 
         protected override void OnStop()
@@ -31,8 +31,8 @@ namespace BehaviourTree
             // 목표로 삼을 상대가 있는데 굳이 새로 세팅해 줄 필요는 없음.
             if (agent.target != null)
             {
-                //pathFinding.PathRequestManager.RequestPath(agent.transform.position, agent.target.transform.position, agent.OnPathFound);
-                agent.navMeshAgent.SetDestination(agent.target.transform.position);
+                pathFinding.PathRequestManager.RequestPath(agent.transform.position, agent.target.transform.position, agent.OnPathFound);
+                //agent.navMeshAgent.SetDestination(agent.target.transform.position);
                 return State.Success;
             }
             else if (SetDestination())
@@ -59,12 +59,12 @@ namespace BehaviourTree
                 Vector3 dir = Random.insideUnitSphere;
                 //Vector3 dir2 = 
                 Vector3 randomPoint = agent.transform.position +  dir * 10f;
-                if (Vector3.Distance(randomPoint, agent.transform.position) >= 3f && NavMesh.SamplePosition(randomPoint, out hit, 1.0f, NavMesh.AllAreas))
-                //if (Vector3.Distance(randomPoint, agent.transform.position) >= 3f && pathFinding.PathRequestManager.IsMovementPoint(randomPoint))
+                //if (Vector3.Distance(randomPoint, agent.transform.position) >= 3f && NavMesh.SamplePosition(randomPoint, out hit, 1.0f, NavMesh.AllAreas))
+                if (Vector3.Distance(randomPoint, agent.transform.position) >= 3f && pathFinding.PathRequestManager.IsMovementPoint(randomPoint))
                 {
-                    agent.navMeshAgent.SetDestination(hit.position);
+                    //agent.navMeshAgent.SetDestination(hit.position);
                     // 목표 지점을 향해 이동!
-                    //pathFinding.PathRequestManager.RequestPath(agent.transform.position, randomPoint, agent.OnPathFound);
+                    pathFinding.PathRequestManager.RequestPath(agent.transform.position, randomPoint, agent.OnPathFound);
                     return true;
                 }
             }

@@ -46,7 +46,7 @@ namespace BehaviourTree
         public bool chasing = false;
         public bool finding = false;
 
-        float speed = 3;
+        float speed = 5;
         int targetIndex;
 
         Action<Vector3[], bool> findNewPathFunc;

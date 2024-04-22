@@ -16,8 +16,8 @@ namespace BehaviourTree
 
         protected override void OnStop()
         {
-            agent.navMeshAgent.isStopped = true;
-            //agent.StopPathFinding();
+            //agent.navMeshAgent.isStopped = true;
+            agent.StopPathFinding();
         }
 
         protected override State OnUpdate()

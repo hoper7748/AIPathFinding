@@ -41,8 +41,8 @@ namespace BehaviourTree
             if (agent.target != null && !agent.isHit)
             {
                 // 이동을 종료하고 다음 행동을 진행함.
-                agent.navMeshAgent.isStopped = true;
-                //agent.StopPathFinding();
+                //agent.navMeshAgent.isStopped = true;
+                agent.StopPathFinding();
                 return State.Failure;
             }
 
@@ -57,12 +57,12 @@ namespace BehaviourTree
         private float CheckDistance()
         {
             //float distance = Vector3.Distance(agent.transform.position, blackboard.moveToObject == null ? blackboard.moveToPosition : blackboard.moveToObject.position);
-            float distance = Vector3.Distance(agent.transform.position, agent.navMeshAgent.destination);
+            //float distance = Vector3.Distance(agent.transform.position, agent.navMeshAgent.destination);
             try
             {
-                //float distance = Vector3.Distance(agent.getPathPosition, agent.getLastPath);
-                //if(distance == 0)
-                //   throw new System.Exception(distance.ToString());
+                float distance = Vector3.Distance(agent.getPathPosition, agent.getLastPath);
+                if (distance == 0)
+                    throw new System.Exception(distance.ToString());
                 return distance;
             }
             catch

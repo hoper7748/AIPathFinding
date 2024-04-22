@@ -94,7 +94,8 @@ namespace pathFinding
                 }
             }
 
-            BlurPenaltyMap(3);
+            // 노드를 중심으로 가중치를 부가하는 노드.
+            //BlurPenaltyMap(3);
         }
 
 
