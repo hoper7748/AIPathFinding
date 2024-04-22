@@ -14,7 +14,7 @@ namespace BehaviourTree
     //
     public class AIAgent : MonoBehaviour
     {
-        //public NavMeshAgent navMeshAgent;
+        public NavMeshAgent navMeshAgent;
 
         public bool FindTarget = false;
 
@@ -51,14 +51,12 @@ namespace BehaviourTree
 
         Action<Vector3[], bool> findNewPathFunc;
 
-
-
-
-
         #region Properties
 
         public GameObject target;
         [HideInInspector] public Vector3 LookPosition;
+        [HideInInspector] public Vector3 TargetPosition;
+
         // 피격 방향
         [HideInInspector] public Vector3 hitDirection;
 
@@ -95,7 +93,7 @@ namespace BehaviourTree
             #endregion
         }
 
-        public GameObject FindViewTarget(float SearchRange, LayerMask hideMask, LayerMask targetMask )
+        public GameObject FindViewTarget(float SearchRange, float HorizontalViewAngle, LayerMask hideMask, LayerMask targetMask )
         {
             #region Omit
             Vector3 targetPos, dir, lookDir;
@@ -202,7 +200,7 @@ namespace BehaviourTree
         {
             #region Omit
             // 캐싱.
-            //navMeshAgent = GetComponent<NavMeshAgent>();
+            navMeshAgent = GetComponent<NavMeshAgent>();
 
             // Action 함수 추가
             findNewPathFunc = OnPathFound;
@@ -224,8 +222,6 @@ namespace BehaviourTree
         // Update is called once per frame
         void Update()
         {
-
-
             // 위협을 받고 있으면서 교전 중인 상태인가?
             if (!isHit && UnderAttack() )
             {

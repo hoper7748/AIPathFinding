@@ -23,7 +23,7 @@ namespace BehaviourTree
 
         protected override State OnUpdate()
         {
-            if(Loop )
+            if(Loop)
             {
                 child.Update();
                 return State.Running;

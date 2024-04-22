@@ -28,9 +28,9 @@ namespace BehaviourTree
             if(distance > 0.5f)
             {
                 //agent.StopPathFinding();
-                pathFinding.PathRequestManager.RequestPath(agent.transform.position, coverSpot.position, agent.OnPathFound);
-                //agent.navMeshAgent.isStopped = false;
-                //agent.navMeshAgent.SetDestination(coverSpot.position);
+                //pathFinding.PathRequestManager.RequestPath(agent.transform.position, coverSpot.position, agent.OnPathFound);
+                agent.navMeshAgent.isStopped = false;
+                agent.navMeshAgent.SetDestination(coverSpot.position);
 
                 return State.Running;
             }
@@ -38,35 +38,35 @@ namespace BehaviourTree
             return State.Failure;
         }
 
-        private void Temp()
-        {
-            Transform coverSpot = agent.GetBestCoverSpot();
-            if (coverSpot == null) ;
-                //return State.Failure;
+        //private void Temp()
+        //{
+        //    Transform coverSpot = agent.GetBestCoverSpot();
+        //    if (coverSpot == null) ;
+        //        //return State.Failure;
 
-            //ai.SetColor(Color.blue);
-            float distance = Vector3.Distance(coverSpot.position, agent.transform.position);
-            if (distance > 0.5f)
-            {
-                pathFinding.PathRequestManager.RequestPath(agent.transform.position, coverSpot.position, agent.OnPathFound);
-                //agent.navMeshAgent.isStopped = false;
-                //agent.navMeshAgent.SetDestination(coverSpot.position);
+        //    //ai.SetColor(Color.blue);
+        //    float distance = Vector3.Distance(coverSpot.position, agent.transform.position);
+        //    if (distance > 0.5f)
+        //    {
+        //        pathFinding.PathRequestManager.RequestPath(agent.transform.position, coverSpot.position, agent.OnPathFound);
+        //        //agent.navMeshAgent.isStopped = false;
+        //        //agent.navMeshAgent.SetDestination(coverSpot.position);
 
-                //return State.Running;
-            }
-            else
-            {
-                agent.StopPathFinding();
-                //ai.isHide = true;
-                //agent.navMeshAgent.isStopped = true;
-                // 돌아봐야 하는데...
-                //agent.angularSpeed = 0;
-                // 오일러 변환은 안해서 그랬네 
-                Vector3 eular = agent.transform.rotation.eulerAngles;
-                agent.transform.rotation = Quaternion.Euler(0, eular.y + 180f, 0);
+        //        //return State.Running;
+        //    }
+        //    else
+        //    {
+        //        agent.StopPathFinding();
+        //        //ai.isHide = true;
+        //        //agent.navMeshAgent.isStopped = true;
+        //        // 돌아봐야 하는데...
+        //        //agent.angularSpeed = 0;
+        //        // 오일러 변환은 안해서 그랬네 
+        //        Vector3 eular = agent.transform.rotation.eulerAngles;
+        //        agent.transform.rotation = Quaternion.Euler(0, eular.y + 180f, 0);
 
-                //return State.Success;
-            }
-        }
+        //        //return State.Success;
+        //    }
+        //}
     }
 }

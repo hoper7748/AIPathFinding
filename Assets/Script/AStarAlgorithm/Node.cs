@@ -5,6 +5,7 @@ using System;
 
 namespace pathFinding
 {
+
     public class Node : IHeapItem<Node>
     {
         int heapIndex;

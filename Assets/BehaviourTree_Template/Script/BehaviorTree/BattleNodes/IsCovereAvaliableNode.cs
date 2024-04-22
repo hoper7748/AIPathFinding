@@ -34,9 +34,9 @@ namespace BehaviourTree
             //return State.Success;
             Transform bestSpot = FindCover();
 
-            pathFinding.PathRequestManager.RequestPath(agent.transform.position, bestSpot.position, agent.OnPathFound);
+            //pathFinding.PathRequestManager.RequestPath(agent.transform.position, bestSpot.position, agent.OnPathFound);
 
-            //agent.navMeshAgent.SetDestination(bestSpot.position);
+            agent.navMeshAgent.SetDestination(bestSpot.position);
             return bestSpot != null ? State.Success : State.Failure;
 
             //blackboard.moveToObject = bestSpot?.transform;
@@ -47,7 +47,7 @@ namespace BehaviourTree
 
         private Transform FindCover()
         {
-            Collider[] cols = Physics.OverlapSphere(agent.transform.position, 20f, 1 << 9);
+            Collider[] cols = Physics.OverlapSphere(agent.transform.position, 15f, 1 << 9);
             Transform Temp = null;
             Transform faraway = null;
             float distanceOld = 0.0f;

@@ -18,7 +18,7 @@ namespace BehaviourTree
 
         protected override State OnUpdate()
         {
-            if(agent.target != null)
+            if(agent.isEncounter)
             {
                 return State.Success;
             }

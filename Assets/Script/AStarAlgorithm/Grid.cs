@@ -31,7 +31,7 @@ namespace pathFinding
                 catch
                 {
                     Debug.LogError($" a = {a}, b = {b} ");
-                    return null;
+                    return grid[0, 0];
                 }
             }
         }
@@ -113,6 +113,7 @@ namespace pathFinding
                     int sampleX = Mathf.Clamp(x, 0, kernelExtents);
                     penaltiesHorizontalPass[0, y] += grid[sampleX, y].movementPenalty;
                 }
+
 
                 for (int x = 1; x < gridSizeX; x++)
                 {
@@ -214,6 +215,9 @@ namespace pathFinding
 
             return neighbours;
         }
+
+        // 8방향 탐색을 하는 것으로 하자 
+        //Vector3[] vec = {new Vector3(-1, 0, -1)}
 
         public Node NodeFromWorldPoint(Vector3 worldPosition)
         {

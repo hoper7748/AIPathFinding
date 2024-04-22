@@ -42,7 +42,7 @@ namespace BehaviourTree
         {
             // Ray를 쏴서 벽을 마주볼 때 까지 체크
             agent.transform.rotation = Quaternion.Lerp(agent.transform.rotation, Quaternion.LookRotation(dir), 3 * Time.deltaTime);
-            if (Physics.Raycast(agent.transform.position, agent.transform.forward, distance, 1<< 9 ))
+            if (Physics.Raycast(agent.transform.position, agent.transform.forward, distance * 1.5f, 1<< 9 ))
             {
                 return true;
             }

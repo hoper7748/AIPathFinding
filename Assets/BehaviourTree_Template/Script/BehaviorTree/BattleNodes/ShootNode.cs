@@ -18,8 +18,8 @@ namespace BehaviourTree
         {
             // 이건 다시 생각해보자
             //pathFinding.PathRequestManager.RequestPath(agent.transform.position, agent.transform.position, agent.OnPathFound);
-            //agent.navMeshAgent.SetDestination(agent.transform.position);
-            agent.StopPathFinding();
+            agent.navMeshAgent.SetDestination(agent.transform.position);
+            //agent.StopPathFinding();
         }
 
         protected override void OnStop()
