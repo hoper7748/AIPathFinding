@@ -8,14 +8,14 @@ namespace pathFinding
 {
     public class Pathfinding : MonoBehaviour
     {
-        PathRequestManager requestManager;
+        //PathRequestManager requestManager;
 
         //public Transform seeker, target;
 
         Grid grid;
         void Awake()
         {
-            requestManager = GetComponent<PathRequestManager>();
+            //requestManager = GetComponent<PathRequestManager>();
             grid = GetComponent<Grid>();
         }
 
@@ -31,22 +31,22 @@ namespace pathFinding
         }
 
 
-        public void StartFindPath(Vector3 startPos, Vector3 targetPos)
-        {
-            StartCoroutine(FindPath(startPos, targetPos));
+        //public void StartFindPath(Vector3 startPos, Vector3 targetPos)
+        //{
+        //    StartCoroutine(FindPath(startPos, targetPos));
 
-        }
+        //}
 
-        IEnumerator FindPath(Vector3 startPos, Vector3 targetPos)
+        public void FindPath(PathRequest request, Action<PathResult> callback)
         {
             Vector3[] wayPoint = new Vector3[0];
             bool pathSuccess = false;
 
-            Node startNode = grid.NodeFromWorldPoint(startPos);
-            Node targetNode = grid.NodeFromWorldPoint(targetPos);
+            Node startNode = grid.NodeFromWorldPoint(request.pathStart);
+            Node targetNode = grid.NodeFromWorldPoint(request.pathEnd);
 
-            if (startNode == null || targetNode == null)
-                yield return null;
+            //if (startNode == null || targetNode == null)
+            //    yield return null;
 
 
             if (startNode.walkable && targetNode.walkable)
@@ -91,7 +91,9 @@ namespace pathFinding
                         //if (!grid[checkX + 1, neighbour.gridY].walkable || !grid[neighbour.gridX, checkY + 1].walkable) continue;
                         #endregion
 
-                        int newMovementCostToNeighbour = currentNode.gCost + GetDistance(currentNode, neighbour) + neighbour.movementPenalty;
+                        // 대각선 이동 시, 해당 이동 항향 ex) -1, -1 위치의 경우 (0, -1), (-1, 0)위치 둘 다 열려있는지 체크 해야함.
+                        int gCostDistance = GetDistance(currentNode, neighbour);
+                        int newMovementCostToNeighbour = currentNode.gCost + gCostDistance + neighbour.movementPenalty;
                         if (newMovementCostToNeighbour < neighbour.gCost || !openSet.Contains(neighbour))
                         {
                             neighbour.gCost = newMovementCostToNeighbour;
@@ -106,12 +108,14 @@ namespace pathFinding
                     }
                 }
             }
-            yield return null;
+            //yield return null;
             if(pathSuccess)
             {
                 wayPoint = RetracePath(startNode, targetNode);
+                pathSuccess = wayPoint.Length > 0;
             }
-            requestManager.FinishedProcessingPath(wayPoint, pathSuccess);
+            //requestManager.FinishedProcessingPath();
+            callback(new PathResult(wayPoint, pathSuccess, request.callback));
         }
 
         Vector3[] RetracePath(Node startNode, Node targetNode)

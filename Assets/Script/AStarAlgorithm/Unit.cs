@@ -21,13 +21,13 @@ namespace pathFinding
 
         private void Start()
         {
-            PathRequestManager.RequestPath(this.transform.position, target.position, OnPathFound);
+            PathRequestManager.RequestPath(new PathRequest( this.transform.position, target.position, OnPathFound));
         }
 
         private void Update()
         {
             if (!chasing && !finding)
-                PathRequestManager.RequestPath(this.transform.position, target.position, OnPathFound);
+                PathRequestManager.RequestPath(new PathRequest(this.transform.position, target.position, OnPathFound));
         }
 
 

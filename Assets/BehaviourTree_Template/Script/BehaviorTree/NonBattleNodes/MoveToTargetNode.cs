@@ -31,7 +31,7 @@ namespace BehaviourTree
             // 목표로 삼을 상대가 있는데 굳이 새로 세팅해 줄 필요는 없음.
             if (agent.target != null)
             {
-                pathFinding.PathRequestManager.RequestPath(agent.transform.position, agent.target.transform.position, agent.OnPathFound);
+                pathFinding.PathRequestManager.RequestPath(new pathFinding.PathRequest(agent.transform.position, agent.target.transform.position, agent.OnPathFound));
                 //agent.navMeshAgent.SetDestination(agent.target.transform.position);
                 return State.Success;
             }
@@ -64,7 +64,7 @@ namespace BehaviourTree
                 {
                     //agent.navMeshAgent.SetDestination(hit.position);
                     // 목표 지점을 향해 이동!
-                    pathFinding.PathRequestManager.RequestPath(agent.transform.position, randomPoint, agent.OnPathFound);
+                    pathFinding.PathRequestManager.RequestPath(new pathFinding.PathRequest(agent.transform.position, randomPoint, agent.OnPathFound));
                     return true;
                 }
             }

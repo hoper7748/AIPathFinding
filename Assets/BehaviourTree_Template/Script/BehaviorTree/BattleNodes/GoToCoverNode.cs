@@ -28,7 +28,7 @@ namespace BehaviourTree
             if(distance > 0.5f)
             {
                 //agent.StopPathFinding();
-                pathFinding.PathRequestManager.RequestPath(agent.transform.position, coverSpot.position, agent.OnPathFound);
+                pathFinding.PathRequestManager.RequestPath(new pathFinding.PathRequest(agent.transform.position, coverSpot.position, agent.OnPathFound));
                 //agent.navMeshAgent.isStopped = false;
                 //agent.navMeshAgent.SetDestination(coverSpot.position);
 
