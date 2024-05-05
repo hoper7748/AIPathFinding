@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace BehaviourTree
 {
@@ -10,6 +10,8 @@ namespace BehaviourTree
         /*[HideInInspector]*/
         public List< Node> children = new List<Node>();
 
+        public UnityAction<Node> onChildAdded;
+        public UnityAction<Node> onChildRemoved;
         public override Node Clone()
         {
             CompositeNode node = Instantiate(this);

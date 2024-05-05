@@ -34,7 +34,7 @@ namespace BehaviourTree
                 return State.Failure;
             }
             //curTimer += Time.deltaTime;
-
+            agent.transform.LookAt(agent.target.transform);
             //if (curTimer <= timer)
             //{
             //    Shoot();

@@ -49,11 +49,6 @@ namespace BehaviourTree
             return State.Success;
         }
 
-        //private bool CheckPath()
-        //{
-        //    if(agent.getLastPath)
-        //}
-
         private float CheckDistance()
         {
             //float distance = Vector3.Distance(agent.transform.position, blackboard.moveToObject == null ? blackboard.moveToPosition : blackboard.moveToObject.position);

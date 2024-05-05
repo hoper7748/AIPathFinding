@@ -35,11 +35,11 @@ namespace BehaviourTree
             {
                 agent.target = target;
                 agent.TargetPosition = target.transform.position;
+                agent.isEncounter = true;
                 return State.Success;
             }
             return State.Failure;
         }
-
 
         // -> 거리를 체크 후 공격을 진행함.
         private bool RangeCheck()

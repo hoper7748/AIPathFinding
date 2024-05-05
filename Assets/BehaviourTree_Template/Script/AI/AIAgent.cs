@@ -93,9 +93,53 @@ namespace BehaviourTree
             #endregion
         }
 
+        // Direction을 벽의 반대 방향을 위치로 삼야아 하니...
+        public Vector3 FindViewTargetHitPoint(float SearchRange, float HorizontalViewAngle, LayerMask hideMask, LayerMask targetMask)
+        {
+            #region Omit
+            RaycastHit hit = new RaycastHit();
+            Vector3 targetPos, dir, lookDir;
+            Vector3 originPos = transform.position;
+            Vector3 offset = Vector3.zero;
+            // 플레이어 서칭
+            Collider[] hitedTargets = Physics.OverlapSphere(originPos, SearchRange, targetMask);
+            float dot, angle;
+
+            foreach (var hitedTarget in hitedTargets)
+            {
+                targetPos = hitedTarget.transform.position;
+                dir = (targetPos - originPos).normalized;
+                lookDir = AngleToDirY(this.transform, rotateAngle);
+
+                dot = Vector3.Dot(lookDir, dir);
+                angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
+                bool hitWall = Physics.Raycast(originPos, dir, out hit, Vector3.Distance(originPos, targetPos), hideMask);
+                if (angle <= HorizontalViewAngle * .5f &&
+                    hitWall)
+                {
+                    // 반환해야 하는 것들 -> 1. 해당 위치로부터 중점까지의 방향과 거리.
+                    Vector3 direction = hit.transform.position - hit.point;
+                    float distance = Vector3.Distance(hit.point, hit.transform.position);
+
+                    offset.x = direction.normalized.x < 0 ? -3 : 3;
+                    offset.z = direction.normalized.z < 0 ? -3 : 3;
+
+                    Instantiate(new GameObject(), hit.transform.position + (direction) + offset, Quaternion.identity);
+                    direction.y = transform.position.y;
+                    return hit.transform.position + (direction  + offset);
+                }
+            }
+
+            return target.transform == null ? Vector3.zero : target.transform.position;
+
+            //return faraway == null ? null : faraway.gameObject;
+            #endregion
+        }
+
         public GameObject FindViewTarget(float SearchRange, float HorizontalViewAngle, LayerMask hideMask, LayerMask targetMask )
         {
             #region Omit
+            RaycastHit hit;
             Vector3 targetPos, dir, lookDir;
             Vector3 originPos = transform.position;
             // 플레이어 서칭
@@ -112,7 +156,7 @@ namespace BehaviourTree
 
                 dot = Vector3.Dot(lookDir, dir);
                 angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
-                bool hitWall = Physics.Raycast(originPos, dir, Vector3.Distance(originPos, targetPos), hideMask);
+                bool hitWall = Physics.Raycast(originPos, dir, out hit, Vector3.Distance(originPos, targetPos), hideMask);
                 //Debug.Log($"aa = {a}");
                 if (angle <= HorizontalViewAngle * .5f &&
                     !hitWall
@@ -137,7 +181,12 @@ namespace BehaviourTree
                             distanceOld = distanceNew;
                         }
                     }
-                }
+                } 
+                //// 벽에 닿았다면? 벽이 닿은 위치를 기억하여 그 곳을 향해 공격하도록 위치를 기억
+                //else if (hitWall)
+                //{
+                    
+                //}
             }
             // 걸린 애들 중에 가장 가까운 애들을 출력
             // 걸리는게 없나요? 정상입니다.

@@ -11,7 +11,7 @@ namespace BehaviourTree
     {
         public float limitedSearchTime;
         public float searchAngle;
-        float curTimer;
+        private static float curTimer;
         protected override void OnStart()
         {
         }
@@ -33,16 +33,39 @@ namespace BehaviourTree
                 // 시간내에 찾지 못한다면 State.Failre을 반환
                 return State.Failure;
             }
-
-            // 찾았다면 State.Success를 반환
-            GameObject target = agent.FindViewTarget(30f, 75f, 1 << 9, 1 << 3);
-            if(target != null)
+            // 흠... 역으로 추격을 해야하니까... 
+            if (CheckDistance() < 0.5f)
             {
                 return State.Success;
             }
 
-
+            // 찾았다면 State.Success를 반환
+            GameObject target = agent.FindViewTarget(30f, 75f, 1 << 9, 1 << 3);
+            if(target == null)
+            {
+                //Debug.Log("BB");
+                return State.Running;
+            }
+            //Debug.Log("AA");
+            Debug.Log($"{target.transform.name}");
+            curTimer = 0;
             return State.Success;
+        }
+
+        private float CheckDistance()
+        {
+            try
+            {
+                float distance = Vector3.Distance(agent.getPathPosition, agent.getLastPath);
+                if (distance == 0)
+                    throw new System.Exception(distance.ToString());
+                return distance;
+            }
+            catch
+            {
+                Debug.Log("Can't Find Path.\ni Waiting new Path.");
+                return 99;
+            }
         }
     }
 }

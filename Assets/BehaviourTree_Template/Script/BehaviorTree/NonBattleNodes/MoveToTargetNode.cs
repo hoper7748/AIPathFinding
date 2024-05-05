@@ -39,17 +39,9 @@ namespace BehaviourTree
             {
                 return State.Success;
             }
-
             return State.Failure;
-            //return State.Success;
-
         }
 
-        //private void MoveTarget()
-        //{
-        //    // 목표 지점 설정
-        //    agent.navMeshAgent.SetDestination(blackboard.moveToObject == null ? blackboard.moveToPosition : blackboard.moveToObject.position);
-        //}
 
         private bool SetDestination()
         {
@@ -59,7 +51,7 @@ namespace BehaviourTree
                 Vector3 dir = Random.insideUnitSphere;
                 //Vector3 dir2 = 
                 Vector3 randomPoint = agent.transform.position +  dir * 10f;
-                //if (Vector3.Distance(randomPoint, agent.transform.position) >= 3f && NavMesh.SamplePosition(randomPoint, out hit, 1.0f, NavMesh.AllAreas))
+
                 if (Vector3.Distance(randomPoint, agent.transform.position) >= 3f && pathFinding.PathRequestManager.IsMovementPoint(randomPoint))
                 {
                     //agent.navMeshAgent.SetDestination(hit.position);

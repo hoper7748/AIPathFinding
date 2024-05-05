@@ -6,16 +6,26 @@ using System.Threading;
 
 namespace pathFinding
 {
+    //public enum DirectionWeight
+    //{
+    //    None = 0,
+    //    Up = 1,
+    //    Down = 2,
+    //    Right,
+    //    Left
+    //}
     public struct PathRequest
     {
         public Vector3 pathStart;
         public Vector3 pathEnd;
         public Action<Vector3[], bool> callback;
+        //public DirectionWeight direction;
         public PathRequest(Vector3 _start, Vector3 _end, Action<Vector3[], bool> _callback)
         {
             pathStart = _start;
             pathEnd = _end;
             callback = _callback;
+            //direction = _direction;
         }
     }
     public struct PathResult
@@ -34,17 +44,10 @@ namespace pathFinding
 
     public class PathRequestManager : MonoBehaviour
     {
-
-        //Queue<PathRequest> pathRequestQueue = new Queue<PathRequest>();
-        //PathRequest currentPathRequest;
-
         Queue<PathResult> results = new Queue<PathResult>();
         
-
-
         Pathfinding pathfinding;
 
-        //bool isProcessingPath;
 
         static PathRequestManager instance;
 
@@ -82,38 +85,11 @@ namespace pathFinding
 
         public void FinishedProcessingPath(PathResult result)
         {
-            //originalRequest.callback(path, success);
-            //PathResult result = new PathResult(path, success, originalRequest.callback);
             lock (results)
             {
                 results.Enqueue(result);
             }
         }
-
-
-        //public static void RequestPath(Vector3 pathStart, Vector3 pathEnd, Action<Vector3[], bool> callback)
-        //{
-        //    PathRequest newRequest = new PathRequest(pathStart, pathEnd, callback);
-        //    instance.pathRequestQueue.Enqueue(newRequest);
-        //    instance.TryProcessNext();
-        //}
-
-        //void TryProcessNext()
-        //{
-        //    if (!isProcessingPath && pathRequestQueue.Count > 0)
-        //    {
-        //        currentPathRequest = pathRequestQueue.Dequeue();
-        //        isProcessingPath = true;
-        //        Pathfinding.StartFindPath(currentPathRequest.pathStart, currentPathRequest.pathEnd);
-        //    }
-        //}
-
-        //public void FinishedProcessingPath(Vector3[] path, bool success)
-        //{
-        //    currentPathRequest.callback(path, success);
-        //    isProcessingPath = false;
-        //    TryProcessNext();
-        //}
 
         // 지정한 위치의 노드에 이동할 수 있는지 체크
         public static bool IsMovementPoint(Vector3 point)
