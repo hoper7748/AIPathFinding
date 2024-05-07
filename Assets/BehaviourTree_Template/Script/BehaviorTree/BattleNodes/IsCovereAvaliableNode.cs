@@ -21,28 +21,11 @@ namespace BehaviourTree
 
         protected override State OnUpdate()
         {
-            //if (agent.GetBestCoverSpot() == null)
-            //{
-            //    Transform bestSpot = FindCover();
-
-            //    agent.SetBestCoverSopt(bestSpot);
-
-            //    agent.navMeshAgent.SetDestination(bestSpot);
-
-            //    return bestSpot != null ? State.Success : State.Failure;
-            //}
-            //return State.Success;
             Transform bestSpot = FindCover();
 
             pathFinding.PathRequestManager.RequestPath(new pathFinding.PathRequest(agent.transform.position, bestSpot.position, agent.OnPathFound));
 
-            //agent.navMeshAgent.SetDestination(bestSpot.position);
             return bestSpot != null ? State.Success : State.Failure;
-
-            //blackboard.moveToObject = bestSpot?.transform;
-
-            //return bestSpot != null ? State.Success : State.Failure;
-
         }
 
         private Transform FindCover()

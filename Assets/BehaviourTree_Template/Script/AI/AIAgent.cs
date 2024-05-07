@@ -120,11 +120,17 @@ namespace BehaviourTree
                     // 반환해야 하는 것들 -> 1. 해당 위치로부터 중점까지의 방향과 거리.
                     Vector3 direction = hit.transform.position - hit.point;
                     float distance = Vector3.Distance(hit.point, hit.transform.position);
-
+                    //if (hit.transform.GetComponent<BT.Cover>() is BT.Cover cover)
+                    //{
+                    //    offset.x = cover.MeshSize.width - (cover.MeshSize.x - hit.point.x);
+                    //    offset.z = cover.MeshSize.height - (cover.MeshSize.y - hit.point.z);
+                    //}
+                    //else
+                    //{ 
                     offset.x = direction.normalized.x < 0 ? -3 : 3;
                     offset.z = direction.normalized.z < 0 ? -3 : 3;
-
-                    Instantiate(new GameObject(), hit.transform.position + (direction) + offset, Quaternion.identity);
+                    //}
+                    //Instantiate(new GameObject(), hit.transform.position + (direction) + offset, Quaternion.identity);
                     direction.y = transform.position.y;
                     return hit.transform.position + (direction  + offset);
                 }
@@ -142,12 +148,10 @@ namespace BehaviourTree
             RaycastHit hit;
             Vector3 targetPos, dir, lookDir;
             Vector3 originPos = transform.position;
-            // 플레이어 서칭
             Collider[] hitedTargets = Physics.OverlapSphere(originPos, SearchRange, targetMask);
             Transform faraway = null;
             float dot, angle;
             float distanceOld, distanceNew;
-
             foreach (var hitedTarget in hitedTargets)
             {
                 targetPos = hitedTarget.transform.position;
@@ -157,13 +161,10 @@ namespace BehaviourTree
                 dot = Vector3.Dot(lookDir, dir);
                 angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
                 bool hitWall = Physics.Raycast(originPos, dir, out hit, Vector3.Distance(originPos, targetPos), hideMask);
-                //Debug.Log($"aa = {a}");
                 if (angle <= HorizontalViewAngle * .5f &&
                     !hitWall
                     && hitedTarget != this)
                 {
-                    // 시야 각 내에 있으니 거리를 비교
-                    // 가장 먼 곳으로 가야함.
                     if (faraway == null)
                     {
                         faraway = hitedTarget.transform;
@@ -171,25 +172,16 @@ namespace BehaviourTree
                     }
                     else
                     {
-                        // 거리를 비교해서 가장 먼 곳에 간다.
                         distanceOld = Vector3.Distance(transform.position, faraway.position);
                         distanceNew = Vector3.Distance(transform.position, hitedTarget.transform.position);
                         if (distanceNew <= distanceOld)
                         {
-                            // 가장 가까운 적을 향해 발포
                             faraway = hitedTarget.transform;
                             distanceOld = distanceNew;
                         }
                     }
                 } 
-                //// 벽에 닿았다면? 벽이 닿은 위치를 기억하여 그 곳을 향해 공격하도록 위치를 기억
-                //else if (hitWall)
-                //{
-                    
-                //}
             }
-            // 걸린 애들 중에 가장 가까운 애들을 출력
-            // 걸리는게 없나요? 정상입니다.
 
             return faraway == null ? null : faraway.gameObject;
             #endregion
@@ -253,6 +245,8 @@ namespace BehaviourTree
 
             // Action 함수 추가
             findNewPathFunc = OnPathFound;
+            Gizmos.color = Color.white;
+            
             #endregion 
         }
 

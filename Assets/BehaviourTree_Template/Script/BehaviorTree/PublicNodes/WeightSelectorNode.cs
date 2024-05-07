@@ -38,8 +38,6 @@ namespace BehaviourTree
             {
                 return State.Success;
             }
-
-
             return currentNode.Update();
         }
 

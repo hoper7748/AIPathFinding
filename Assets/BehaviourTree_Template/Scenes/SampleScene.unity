@@ -175,6 +175,12 @@ MonoBehaviour:
   coverSpots:
   - {fileID: 1282848862}
   - {fileID: 219693959}
+  MeshSize:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
 --- !u!65 &7767488
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -474,6 +480,12 @@ MonoBehaviour:
   coverSpots:
   - {fileID: 1570436324}
   - {fileID: 331501470}
+  MeshSize:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
 --- !u!65 &120804982
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -816,6 +828,12 @@ MonoBehaviour:
   coverSpots:
   - {fileID: 817373645}
   - {fileID: 126093503}
+  MeshSize:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
 --- !u!65 &516579203
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -976,6 +994,12 @@ MonoBehaviour:
   coverSpots:
   - {fileID: 1583387258}
   - {fileID: 288090026}
+  MeshSize:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
 --- !u!65 &665681339
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1192,6 +1216,12 @@ MonoBehaviour:
   coverSpots:
   - {fileID: 510506359}
   - {fileID: 667627389}
+  MeshSize:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
 --- !u!65 &827078565
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1583,6 +1613,12 @@ MonoBehaviour:
   coverSpots:
   - {fileID: 1249950670}
   - {fileID: 1262463889}
+  MeshSize:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
 --- !u!65 &1077371797
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2009,7 +2045,7 @@ Transform:
   m_GameObject: {fileID: 1502737661}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.88, y: 0.5, z: 17.92}
+  m_LocalPosition: {x: 3.96, y: 0.5, z: 19.72}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2283,6 +2319,12 @@ MonoBehaviour:
   coverSpots:
   - {fileID: 780949511}
   - {fileID: 1346514366}
+  MeshSize:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
 --- !u!65 &1564057255
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2671,6 +2713,12 @@ MonoBehaviour:
   coverSpots:
   - {fileID: 443989783}
   - {fileID: 1024496115}
+  MeshSize:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
 --- !u!65 &1806781400
 BoxCollider:
   m_ObjectHideFlags: 0

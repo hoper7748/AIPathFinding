@@ -7,6 +7,7 @@ namespace BehaviourTree
     public class WeightDecoratorNode : DecoratorNode, IWeightNode
     {
         public UnityAction<float, float> onWeightChanged;
+        //public Node OrNode;
 
         // 이 노드로 들어가기 위한 가중치
         [SerializeField] private float weight;
@@ -34,7 +35,11 @@ namespace BehaviourTree
 
         protected override void OnStart()
         {
-
+            if (this is WeightDecoratorNode decoNode)
+            {
+                // 가중치가 높아짐
+                decoNode.Weight = decoNode.weight + 1;
+            }
         }
 
         protected override void OnStop()
