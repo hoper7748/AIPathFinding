@@ -22,6 +22,8 @@ namespace BehaviourTree
         protected override State OnUpdate()
         {
             Transform bestSpot = FindCover();
+            if (bestSpot == null)
+                return State.Failure;
 
             pathFinding.PathRequestManager.RequestPath(new pathFinding.PathRequest(agent.transform.position, bestSpot.position, agent.OnPathFound));
 
@@ -30,12 +32,11 @@ namespace BehaviourTree
 
         private Transform FindCover()
         {
-            Collider[] cols = Physics.OverlapSphere(agent.transform.position, 15f, 1 << 9);
-            Transform Temp = null;
             Transform faraway = null;
             float distanceOld = 0.0f;
             float distanceNew = 0.0f;
 
+            Collider[] cols = Physics.OverlapSphere(agent.transform.position, 5f, 1 << 9);
             for (int i = 0; i < cols.Length; i++)
             {
                 // 가장 먼 곳으로 가야함.
@@ -76,6 +77,8 @@ namespace BehaviourTree
                 Transform[] avaliableSpots = cover.GetCoverSpots();
                 for (int i = 0; i < avaliableSpots.Length; i++)
                 {
+                    // 이건 타겟으 쫓아가는 것. 타겟의 위치는 알고 있어야함.
+                    // 타겟을 잃었는지 체크가 필요함.
                     Vector3 direction = agent.target.transform.position - avaliableSpots[i].position;
                     if (CheckIfSpotIsValid(avaliableSpots[i]))
                     {
@@ -91,7 +94,7 @@ namespace BehaviourTree
             }
             catch
             {
-                Debug.Log("AA");
+                Debug.LogWarning("Error");
             }
             return bestSpot;
         }
@@ -113,5 +116,6 @@ namespace BehaviourTree
         }
 
     }
+
 
 }

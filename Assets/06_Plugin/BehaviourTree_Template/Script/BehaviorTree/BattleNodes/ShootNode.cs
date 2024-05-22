@@ -29,27 +29,15 @@ namespace BehaviourTree
 
         protected override State OnUpdate()
         {
-            if(false)
-            {
-                return State.Failure;
-            }
-            //curTimer += Time.deltaTime;
             agent.transform.LookAt(agent.target.transform);
-            //if (curTimer <= timer)
-            //{
-            //    Shoot();
-            //    return State.Running;
-            //}
-            //curTimer = 0;
-            return State.Success;
-            //return State.Failure;
+            Shoot();
+            return State.Success;   
         }
 
         // 공격을 진행할 때, 오브젝트를 날리는 것이 아닌 Ray를 쏘는 것으로 하자.
         private void Shoot()
         {
-            //Debug.DrawLine(agent.transform.position, agent.target.transform.position, color, 5f);
-            //agent.shoot = true;
+            agent.ShootTarget();
         }
 
     }

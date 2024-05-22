@@ -32,6 +32,7 @@ namespace BehaviourTree
         private float m_horizontalViewHalfAngle = 0f;
         private float rotateAngle = 0;
         [SerializeField] private float m_viewRotateZ = 0f;
+        public Bullet bulletPrefab;
 
         // PathFinding
         public pathFinding.Grid grid;
@@ -260,16 +261,20 @@ namespace BehaviourTree
 
         }
 
+        private void FixedUpdate()
+        {
+            if (!isHit && UnderAttack())
+            {
+                Debug.Log("AA");
+            }
+        }
+
         private float SearchTimer = 0.5f;
         private float curTimer = 0;
         // Update is called once per frame
         void Update()
         {
             // 위협을 받고 있으면서 교전 중인 상태인가?
-            if (!isHit && UnderAttack() )
-            {
-                Debug.Log("AA");
-            }
             if(target != null)
             {
                 Debug.DrawLine(transform.position, target.transform.position);
@@ -291,9 +296,10 @@ namespace BehaviourTree
             foreach (var bullet in bullets)
             {
                 Bullet bullet1 = bullet.GetComponent<Bullet>();
-                if (bullet1)
+                if (bullet1 && bullet1.Oner != this.transform)
                 {
                     // 총알이 날아오면 총알이 날아온 방향을 기준으로 숨을 수 있는 가장 가까운 공간에 숨는다.
+                    Debug.Log($"{bullet1.Oner.name}");
                     isHit = true;
                     target = bullet1.getOner.gameObject;
                     return true;
@@ -315,6 +321,14 @@ namespace BehaviourTree
                 return true;
             }
             return false;
+            #endregion
+        }
+        public void ShootTarget()
+        {
+            #region Omit
+            GameObject bullet = Instantiate(bulletPrefab.gameObject, transform.position + transform.forward * 1.5f, Quaternion.identity);
+            bullet.GetComponent<Bullet>().ShootTarget(this.transform, target.transform.position, this.transform.position);
+            Destroy(bullet, 2f);
             #endregion
         }
 

@@ -7,8 +7,10 @@ using Unity.VisualScripting;
 public class Bullet : MonoBehaviour
 {
     public Transform Oner;
-    Rigidbody rigidbody;
+    //Rigidbody rigidbody;
     int damage = 0;
+    public float speed = 0;
+    Vector3 directon;
 
     public Transform getOner
     {
@@ -17,27 +19,25 @@ public class Bullet : MonoBehaviour
 
     private void Start()
     {
-        rigidbody = GetComponent<Rigidbody>();
+        //rigidbody = GetComponent<Rigidbody>();
 
-        if (rigidbody == null)
-        {
-            this.AddComponent<Rigidbody>();
-            rigidbody = GetComponent<Rigidbody>();
-        }
+        //if (rigidbody == null)
+        //{
+        //    this.AddComponent<Rigidbody>();
+        //    //rigidbody = GetComponent<Rigidbody>();
+        //}
         damage = damage == 0 ? 10 : damage;
     }
 
-    public void ShootTarget(Transform oner, Vector3 target, Vector3 origin, float time, float height = 1.5f)
+    public void ShootTarget(Transform oner, Vector3 target, Vector3 origin, float time = 0.5f, float height = 1.5f)
     {
         Oner = oner;
-        if (rigidbody == null)
-            rigidbody = GetComponent<Rigidbody>();
-        rigidbody.velocity = EnemyAI.CaculateVelocity(target, origin, time, height);
+        directon = (target- origin).normalized;
     }
 
     private void Update()
     {
-        
+        transform.Translate(directon * speed * Time.deltaTime);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -45,10 +45,10 @@ public class Bullet : MonoBehaviour
         //Debug.Log($"AA = {other.name}");
         if (other.transform == Oner)
             return;
-        if (other.CompareTag("Player") )
+        if (other.CompareTag("Player"))
         {
             other.GetComponent<EnemyAI>().GetDamage(Oner);
         }
-            Destroy(this.gameObject);
+        Destroy(this.gameObject);
     }
 }
