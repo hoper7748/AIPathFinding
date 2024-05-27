@@ -14,6 +14,7 @@ namespace BehaviourTree
         {
             //agent.navMeshAgent.isStopped = false;
             agent.StopPathFinding();
+
         }
 
         protected override void OnStop()

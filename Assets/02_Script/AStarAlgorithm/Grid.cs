@@ -95,7 +95,7 @@ namespace pathFinding
             }
 
             // 노드를 중심으로 가중치를 부가하는 노드.
-            //BlurPenaltyMap(3);
+            BlurPenaltyMap(3);
         }
 
 
@@ -207,6 +207,8 @@ namespace pathFinding
 
                     if (checkX >= 0 && checkX < gridSizeX && checkY >= 0 && checkY < gridSizeY)
                     {
+                        if (!grid[checkX, node.gridY].walkable && !grid[node.gridX, checkY].walkable)
+                            continue;
                         if (!grid[checkX, node.gridY].walkable || !grid[node.gridX, checkY].walkable)
                             continue;
                         neighbours.Add(grid[checkX, checkY]);

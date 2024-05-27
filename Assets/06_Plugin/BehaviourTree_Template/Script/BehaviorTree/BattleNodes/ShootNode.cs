@@ -29,7 +29,8 @@ namespace BehaviourTree
 
         protected override State OnUpdate()
         {
-            agent.transform.LookAt(agent.target.transform);
+            if(!agent.isLostTarget)
+                agent.transform.LookAt(agent.target.transform);
             Shoot();
             return State.Success;   
         }

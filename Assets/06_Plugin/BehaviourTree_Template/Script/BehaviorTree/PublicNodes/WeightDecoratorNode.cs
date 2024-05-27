@@ -35,11 +35,11 @@ namespace BehaviourTree
 
         protected override void OnStart()
         {
-            if (this is WeightDecoratorNode decoNode)
-            {
-                // 가중치가 높아짐
-                decoNode.Weight = decoNode.weight + 1;
-            }
+            //if (this is WeightDecoratorNode decoNode)
+            //{
+            //    // 가중치가 높아짐
+            //    decoNode.Weight = decoNode.weight + 1;
+            //}
         }
 
         protected override void OnStop()

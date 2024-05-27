@@ -25,17 +25,37 @@ namespace BehaviourTree
         // 적과 마주쳤다!!
         public bool isEncounter = false;
         // 적을 잃었다!!
-        public bool isLostEnemy = true;
+        public bool isLostTarget = true;
 
         public bool isHit = false;
         public bool isConcealment = false;
         public bool isHide = false;
+        public bool isSuperAmmor = false;
 
-        [HideInInspector] public Vector3 LostTargetPoint = Vector3.zero;
+
+        public float health = 100;
+
+        public Vector3 LostTargetPoint = Vector3.zero;
 
         private const float HorizontalViewAngle = 75;
         private float m_horizontalViewHalfAngle = 0f;
         private float rotateAngle = 0;
+
+        public void GetDamage(Transform shootOner)
+        {
+            // 데미지를 입었다! 그럼 내가 공격을 받고 있다는 뜻인데... 그럼 반격을 하든 공격을 하든 해야겠지?
+            if (!isSuperAmmor)
+            {
+                // hide인 상태에서 적에게 피해를 입으면? 
+                health -= 10f;
+                //isHide = false;   // 바로 도망쳐
+            }
+            else
+            {
+
+            }
+        }
+
         [SerializeField] private float m_viewRotateZ = 0f;
         public Bullet bulletPrefab;
 
@@ -259,7 +279,7 @@ namespace BehaviourTree
         {
             if (!isHit && UnderAttack())
             {
-                Debug.Log("AA");
+                //Debug.Log("AA");
             }
         }
 
@@ -272,6 +292,7 @@ namespace BehaviourTree
             if(target != null)
             {
                 Debug.DrawLine(transform.position, target.transform.position);
+                Debug.DrawLine(transform.position, LostTargetPoint != Vector3.zero ? LostTargetPoint : target.transform.position, Color.red);
             }
             
             // 방향을 향해 바라보는거라 Dir을 구할 필요가 있음 그럼 어덯게 dir을 체크할 것인가?
@@ -286,15 +307,17 @@ namespace BehaviourTree
         {
             #region Omit
             Collider[] bullets = Physics.OverlapSphere(transform.position, 2f, 1 << 10);
-            //Debug.Log($"bullets Count {bullets.Length}");
+
             foreach (var bullet in bullets)
             {
                 Bullet bullet1 = bullet.GetComponent<Bullet>();
                 if (bullet1 && bullet1.Oner != this.transform)
                 {
                     // 총알이 날아오면 총알이 날아온 방향을 기준으로 숨을 수 있는 가장 가까운 공간에 숨는다.
-                    Debug.Log($"{bullet1.Oner.name}");
+                    //Debug.Log($"{bullet1.Oner.name}");
                     isHit = true;
+                    isLostTarget = false;
+                    LostTargetPoint = Vector3.zero;
                     target = bullet1.getOner.gameObject;
                     return true;
                 }
@@ -326,7 +349,8 @@ namespace BehaviourTree
         {
             #region Omit
             GameObject bullet = Instantiate(bulletPrefab.gameObject, transform.position + transform.forward * 1.5f, Quaternion.identity);
-            bullet.GetComponent<Bullet>().ShootTarget(this.transform, target.transform.position, this.transform.position);
+            bullet.GetComponent<Bullet>().ShootTarget(this.transform, LostTargetPoint != Vector3.zero ? LostTargetPoint : target.transform.position, this.transform.position);
+            transform.LookAt(LostTargetPoint != Vector3.zero ? LostTargetPoint : target.transform.position);
             Destroy(bullet, 2f);
             #endregion
         }

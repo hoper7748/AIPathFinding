@@ -95,6 +95,9 @@ namespace BehaviourTree
             catch
             {
                 Debug.LogWarning("Error");
+                agent.LostTargetPoint = Vector3.zero;
+                agent.isLostTarget = true;
+                agent.isEncounter = false;
             }
             return bestSpot;
         }

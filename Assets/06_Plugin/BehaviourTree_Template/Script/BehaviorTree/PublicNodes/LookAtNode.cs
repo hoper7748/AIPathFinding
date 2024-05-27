@@ -15,7 +15,7 @@ namespace BehaviourTree
             // lookPosition을 바라보자 
             dir = agent.LookPosition - agent.transform.position;
             distance = Vector3.Distance(agent.transform.position, agent.LookPosition);
-            Debug.Log($"{distance}");
+            //Debug.Log($"{distance}");
         }
 
         protected override void OnStop()

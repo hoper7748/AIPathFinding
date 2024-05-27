@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Unity.VisualScripting;
 
 //[]
 public class Bullet : MonoBehaviour
@@ -19,13 +16,6 @@ public class Bullet : MonoBehaviour
 
     private void Start()
     {
-        //rigidbody = GetComponent<Rigidbody>();
-
-        //if (rigidbody == null)
-        //{
-        //    this.AddComponent<Rigidbody>();
-        //    //rigidbody = GetComponent<Rigidbody>();
-        //}
         damage = damage == 0 ? 10 : damage;
     }
 
@@ -42,13 +32,14 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //Debug.Log($"AA = {other.name}");
+        //Debug.Log("OnTriggerEnter");
         if (other.transform == Oner)
             return;
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") )
         {
-            other.GetComponent<EnemyAI>().GetDamage(Oner);
+            other.GetComponent<BehaviourTree.AIAgent>().GetDamage(Oner);
         }
+
         Destroy(this.gameObject);
     }
 }

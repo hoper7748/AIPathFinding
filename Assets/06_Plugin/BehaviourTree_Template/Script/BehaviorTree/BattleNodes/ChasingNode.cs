@@ -14,11 +14,12 @@ namespace BehaviourTree
         private static float curTimer;
         protected override void OnStart()
         {
+            //Debug.Log("Chasing");
         }
 
         protected override void OnStop()
         {
-
+            agent.StopPathFinding();
         }
 
         protected override State OnUpdate()
@@ -47,7 +48,7 @@ namespace BehaviourTree
                 return State.Running;
             }
             //Debug.Log("AA");
-            Debug.Log($"{target.transform.name}");
+            //Debug.Log($"{target.transform.name}");
             curTimer = 0;
             return State.Success;
         }
