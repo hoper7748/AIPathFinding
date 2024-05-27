@@ -24,9 +24,14 @@ namespace BehaviourTree
 
         // 적과 마주쳤다!!
         public bool isEncounter = false;
+        // 적을 잃었다!!
+        public bool isLostEnemy = true;
+
         public bool isHit = false;
         public bool isConcealment = false;
         public bool isHide = false;
+
+        [HideInInspector] public Vector3 LostTargetPoint = Vector3.zero;
 
         private const float HorizontalViewAngle = 75;
         private float m_horizontalViewHalfAngle = 0f;
@@ -121,25 +126,14 @@ namespace BehaviourTree
                     // 반환해야 하는 것들 -> 1. 해당 위치로부터 중점까지의 방향과 거리.
                     Vector3 direction = hit.transform.position - hit.point;
                     float distance = Vector3.Distance(hit.point, hit.transform.position);
-                    //if (hit.transform.GetComponent<BT.Cover>() is BT.Cover cover)
-                    //{
-                    //    offset.x = cover.MeshSize.width - (cover.MeshSize.x - hit.point.x);
-                    //    offset.z = cover.MeshSize.height - (cover.MeshSize.y - hit.point.z);
-                    //}
-                    //else
-                    //{ 
                     offset.x = direction.normalized.x < 0 ? -3 : 3;
                     offset.z = direction.normalized.z < 0 ? -3 : 3;
-                    //}
-                    //Instantiate(new GameObject(), hit.transform.position + (direction) + offset, Quaternion.identity);
                     direction.y = transform.position.y;
                     return hit.transform.position + (direction  + offset);
                 }
             }
 
             return target.transform == null ? Vector3.zero : target.transform.position;
-
-            //return faraway == null ? null : faraway.gameObject;
             #endregion
         }
 
@@ -307,6 +301,11 @@ namespace BehaviourTree
             }
             return false;
             #endregion
+        }
+
+        public void SetLastEnemyDirection()
+        {
+
         }
 
         // 타이머 

@@ -30,7 +30,12 @@ namespace BehaviourTree
                 agent.isHide = true;
                 agent.SetBestCoverSopt(null);
                 agent.LookPosition = hit.point;
+                // 상대방 위치를 잃었다.
+                agent.isLostEnemy = true;
+                // 방향 설정
+                agent.LostTargetPoint = agent.target.transform.position;
                 return State.Success;
+
             }
             return State.Running;
         }
